@@ -44,3 +44,27 @@ All commands are run from the root of the project, from a terminal:
 ## 👀 Want to learn more?
 
 Feel free to check [our documentation](https://docs.astro.build) or jump into our [Discord server](https://astro.build/chat).
+
+## Spotify Now Playing Tile
+
+This portfolio includes a Spotify now-playing Astro island that polls a Cloudflare Worker endpoint.
+
+### Frontend env
+
+Copy `.env.example` to `.env` and set:
+
+```sh
+PUBLIC_SPOTIFY_NOW_PLAYING_URL="https://spotify-now-playing.<your-subdomain>.workers.dev"
+```
+
+### Worker
+
+Worker source is in `worker/`.
+
+1. Set Worker secrets:
+   - `bunx wrangler secret put SPOTIFY_CLIENT_ID`
+   - `bunx wrangler secret put SPOTIFY_CLIENT_SECRET`
+   - `bunx wrangler secret put SPOTIFY_REFRESH_TOKEN`
+2. Set `ALLOWED_ORIGIN` in `worker/wrangler.toml`.
+3. Deploy:
+   - `bunx wrangler deploy`

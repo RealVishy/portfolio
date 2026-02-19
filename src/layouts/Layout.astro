@@ -2,9 +2,9 @@
 const { title = 'Portfolio' } = Astro.props;
 ---
 
-<!doctype html>
-<html lang="en">
-	<head>
+	<!doctype html>
+	<html lang="en">
+		<head>
 		<meta charset="UTF-8" />
 		<meta name="viewport" content="width=device-width" />
 		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
@@ -15,18 +15,59 @@ const { title = 'Portfolio' } = Astro.props;
 			href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;600&family=Space+Grotesk:wght@400;500;700&display=swap"
 			rel="stylesheet"
 		/>
-		<meta name="generator" content={Astro.generator} />
-		<title>{title}</title>
-	</head>
+			<meta name="generator" content={Astro.generator} />
+			<title>{title}</title>
+			<script is:inline>
+				(() => {
+					const storageKey = 'theme-preference';
+					const root = document.documentElement;
+					const media = window.matchMedia('(prefers-color-scheme: dark)');
+					const stored = localStorage.getItem(storageKey);
+					const preference =
+						stored === 'dark' || stored === 'light' || stored === 'system' ? stored : 'system';
+					const resolvedTheme = preference === 'system' ? (media.matches ? 'dark' : 'light') : preference;
+					root.dataset.themePreference = preference;
+					root.dataset.theme = resolvedTheme;
+				})();
+			</script>
+		</head>
 	<body>
 		<slot />
 	</body>
 </html>
 
-<style is:global>
-	:root {
-		color-scheme: dark;
-	}
+	<style is:global>
+		:root {
+			--bg: #090d12;
+			--bg-elevated: #0a0f16;
+			--tile: #10151c;
+			--tile-strong: #0c1118;
+			--tile-alt: #0d1219;
+			--text: #eef0f2;
+			--text-soft: #ccd1d8;
+			--muted: #9da3ad;
+			--border: #303744;
+			--accent: #e24a53;
+			--ring: #3d4658;
+			--avatar-bg: #0f141d;
+			color-scheme: dark;
+		}
+
+		:root[data-theme='light'] {
+			--bg: #eef3fa;
+			--bg-elevated: #f7f9fc;
+			--tile: #f7fafc;
+			--tile-strong: #edf2f8;
+			--tile-alt: #e8eef6;
+			--text: #121723;
+			--text-soft: #334056;
+			--muted: #5f6b80;
+			--border: #c7d0df;
+			--accent: #cf4658;
+			--ring: #aeb8c8;
+			--avatar-bg: #e5ebf4;
+			color-scheme: light;
+		}
 
 	*,
 	*::before,
@@ -42,8 +83,11 @@ const { title = 'Portfolio' } = Astro.props;
 
 	body {
 		font-family: 'Space Grotesk', 'Segoe UI', sans-serif;
-		background: #090d12;
-		color: #f4f4f5;
+		background: var(--bg, #090d12);
+		color: var(--text, #f4f4f5);
+		transition:
+			background-color 0.2s ease,
+			color 0.2s ease;
 	}
 
 	a {

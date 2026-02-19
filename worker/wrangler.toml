@@ -1,0 +1,7 @@
+name = "spotify-now-playing"
+main = "src/index.ts"
+compatibility_date = "2026-02-19"
+workers_dev = true
+
+[vars]
+ALLOWED_ORIGIN = "https://your-portfolio.pages.dev"
