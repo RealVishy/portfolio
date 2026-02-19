@@ -1,11 +1,809 @@
 ---
-import Welcome from '../components/Welcome.astro';
+import { Image } from 'astro:assets';
 import Layout from '../layouts/Layout.astro';
+import profilePhoto from '../assets/profile-photo.png';
+import {
+	siAstro,
+	siDocker,
+	siFedora,
+	siFishshell,
+	siGithub,
+	siKubernetes,
+	siPython,
+	siTrakt,
+} from 'simple-icons';
 
-// Welcome to Astro! Wondering what to do next? Check out the Astro documentation at https://docs.astro.build
-// Don't want to use any of this? Delete everything in this file, the `assets`, `components`, and `layouts` directories, and start fresh.
+const tools = [
+	{ name: 'Docker', icon: siDocker, url: 'https://www.docker.com/' },
+	{ name: 'Fedora', icon: siFedora, url: 'https://fedoraproject.org/' },
+	{ name: 'Python', icon: siPython, url: 'https://www.python.org/' },
+	{ name: 'Astro', icon: siAstro, url: 'https://astro.build/' },
+	{ name: 'Fish', icon: siFishshell, url: 'https://fishshell.com/' },
+	{ name: 'Kubernetes', icon: siKubernetes, url: 'https://kubernetes.io/' },
+];
 ---
 
-<Layout>
-	<Welcome />
+<Layout title="Vishwas Parpattegar | Portfolio">
+	<div class="backdrop" aria-hidden="true"></div>
+	<main class="page">
+		<section class="tile hero">
+			<div>
+				<h1>
+					Hi, I&apos;m <strong>Vishwas Parpattegar</strong>, a software engineering student with a
+					strong focus on dev experience, containerisation, and CI/CD.
+				</h1>
+				<div class="socials">
+					<a href="https://github.com/RealVishy" target="_blank" rel="noreferrer">
+						<svg viewBox="0 0 24 24" aria-hidden="true">
+							<path d={siGithub.path} fill="currentColor"></path>
+						</svg>
+						<span>GitHub</span>
+					</a>
+					<a href="https://linkedin.com" target="_blank" rel="noreferrer">
+						<svg viewBox="0 0 24 24" aria-hidden="true">
+							<path
+								d="M20.447 20.452H16.89V14.87c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.137 1.445-2.137 2.939v5.68H9.35V9h3.415v1.561h.046c.478-.9 1.638-1.85 3.37-1.85 3.602 0 4.267 2.37 4.267 5.455v6.286ZM5.337 7.433a2.065 2.065 0 1 1 0-4.13 2.065 2.065 0 0 1 0 4.13Zm1.783 13.019H3.555V9H7.12v11.452ZM22.225 0H1.771A1.746 1.746 0 0 0 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451A1.752 1.752 0 0 0 24 22.271V1.729A1.751 1.751 0 0 0 22.222 0h.003Z"
+							></path>
+						</svg>
+						<span>LinkedIn</span>
+					</a>
+					<a href="mailto:vishwasparpattegar@gmail.com">
+						<svg viewBox="0 0 24 24" aria-hidden="true">
+							<path
+								d="M6 2a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8.8L14.2 2H6Zm7 1.7 4.3 4.3H13V3.7Zm-4 7.3h6a1 1 0 1 1 0 2H9a1 1 0 1 1 0-2Zm0 4h6a1 1 0 1 1 0 2H9a1 1 0 1 1 0-2Z"
+							></path>
+						</svg>
+						<span>Resume</span>
+					</a>
+					<a href="https://trakt.tv" target="_blank" rel="noreferrer">
+						<svg viewBox="0 0 24 24" aria-hidden="true">
+							<path d={siTrakt.path} fill="currentColor"></path>
+						</svg>
+						<span>Trakt</span>
+					</a>
+				</div>
+			</div>
+			<div class="avatar">
+				<div class="avatar-ring"></div>
+				<Image
+					class="avatar-photo"
+					src={profilePhoto}
+					alt="Vishwas Parpattegar"
+					loading="eager"
+					fetchpriority="high"
+				/>
+			</div>
+		</section>
+
+		<section class="cards">
+			<div class="cards-column cards-left">
+				<article class="tile about">
+					<h2>About me</h2>
+					<p>
+						Software Engineering Student @ UTS.<br />Primary tools:
+					</p>
+					<div class="tool-grid">
+						{
+							tools.map((tool) => (
+								<a class="tool-chip" href={tool.url} target="_blank" rel="noreferrer">
+									<svg viewBox="0 0 24 24" aria-hidden="true">
+										<path d={tool.icon.path} fill="currentColor" />
+									</svg>
+									<span>{tool.name}</span>
+								</a>
+							))
+						}
+					</div>
+					<p>I focus on open source and developer tooling.</p>
+				</article>
+
+				<article class="tile now-tile">
+					<div class="status-top">
+						<h2>Now</h2>
+						<span class="dot" aria-hidden="true"></span>
+					</div>
+					<p id="status-message-text" class="status-message">
+						Attending university lectures and building portfolio projects.
+					</p>
+				</article>
+			</div>
+
+			<div class="cards-column cards-right">
+				<article class="tile meta">
+					<div class="meta-block">
+						<div class="time-head">
+							<h2>Current Conditions</h2>
+						</div>
+						<div class="clock-row">
+							<p class="clock" id="sydney-time">--:--:--</p>
+							<div class="weather-chip" aria-live="polite">
+								<span id="weather-icon" aria-hidden="true">--</span>
+								<span id="weather-temp">-- C</span>
+							</div>
+						</div>
+						<p class="muted">Sydney • Australia</p>
+					</div>
+				</article>
+
+				<article class="tile reading">
+					<h2>Currently Reading</h2>
+					<p class="reading-title">Designing Data-Intensive Applications</p>
+					<p class="reading-meta">Martin Kleppmann • Chapter 5</p>
+				</article>
+
+				<article class="tile terminal">
+					<h2 class="terminal-title">Terminal</h2>
+					<div class="terminal-output" aria-live="polite">
+						<p class="terminal-line">
+							<span class="prompt" aria-hidden="true">&gt;</span>
+							<span id="terminal-command">bun install</span>
+						</p>
+					</div>
+				</article>
+
+				<article class="tile signature">
+					<p>
+						&copy; 2026 - Crafted using <a class="accent" href="https://astro.build/" target="_blank" rel="noreferrer">Astro</a> by Vishwas.
+					</p>
+				</article>
+			</div>
+		</section>
+	</main>
 </Layout>
+
+<script is:inline>
+	const node = document.querySelector('#sydney-time');
+	const terminalCommandNode = document.querySelector('#terminal-command');
+	const weatherTempNode = document.querySelector('#weather-temp');
+	const weatherIconNode = document.querySelector('#weather-icon');
+	const statusMessageNode = document.querySelector('#status-message-text');
+
+	const formatTime = () => {
+		const now = new Date();
+		const parts = new Intl.DateTimeFormat('en-AU', {
+			timeZone: 'Australia/Sydney',
+			hour: '2-digit',
+			minute: '2-digit',
+			second: '2-digit',
+			hour12: false,
+			timeZoneName: 'short',
+		}).format(now);
+		if (node) node.textContent = parts;
+	};
+
+	formatTime();
+	setInterval(formatTime, 1000);
+
+	const weatherIconFromCode = (code) => {
+		const svg = (paths) =>
+			`<svg viewBox="0 0 24 24" aria-hidden="true" focusable="false" fill="none" stroke="#cfd4de" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round">${paths}</svg>`;
+
+		if (code === 0) {
+			return svg(
+				'<circle cx="12" cy="12" r="4"></circle><path d="M12 2v3M12 19v3M4.9 4.9l2.1 2.1M17 17l2.1 2.1M2 12h3M19 12h3M4.9 19.1l2.1-2.1M17 7l2.1-2.1"></path>'
+			);
+		}
+		if (code === 1 || code === 2) {
+			return svg(
+				'<path d="M8.5 16H17a3 3 0 0 0 .5-6A4.5 4.5 0 0 0 9 9.2 3 3 0 0 0 8.5 16Z"></path><path d="M8 5.5A2.5 2.5 0 1 1 5.5 8"></path>'
+			);
+		}
+		if (code === 3) return svg('<path d="M7 18h9a4 4 0 0 0 .8-7.9A5.5 5.5 0 0 0 6.2 8.4 4 4 0 0 0 7 18Z"></path>');
+		if (code === 45 || code === 48) {
+			return svg(
+				'<path d="M7.5 14.5h9a3.5 3.5 0 0 0 .6-7A5 5 0 0 0 7.4 6.2a3.5 3.5 0 0 0 .1 8.3Z"></path><path d="M6 17h12M7 20h10"></path>'
+			);
+		}
+		if ((code >= 51 && code <= 67) || (code >= 80 && code <= 82)) {
+			return svg(
+				'<path d="M7 14h10a3.6 3.6 0 0 0 .7-7.1A5 5 0 0 0 8.3 6 3.6 3.6 0 0 0 7 14Z"></path><path d="M9 16l-.8 2M13 16l-.8 2M17 16l-.8 2"></path>'
+			);
+		}
+		if ((code >= 71 && code <= 77) || code === 85 || code === 86) {
+			return svg(
+				'<path d="M7 14h10a3.6 3.6 0 0 0 .7-7.1A5 5 0 0 0 8.3 6 3.6 3.6 0 0 0 7 14Z"></path><path d="M9 17h0M13 18h0M16.5 17.5h0"></path>'
+			);
+		}
+		if (code >= 95 && code <= 99) {
+			return svg(
+				'<path d="M7 14h10a3.6 3.6 0 0 0 .7-7.1A5 5 0 0 0 8.3 6 3.6 3.6 0 0 0 7 14Z"></path><path d="M12 14.5l-1.8 3h1.5l-1 2.5 3.1-4h-1.6l1.1-1.5"></path>'
+			);
+		}
+		return svg('<path d="M7 18h9a4 4 0 0 0 .8-7.9A5.5 5.5 0 0 0 6.2 8.4 4 4 0 0 0 7 18Z"></path>');
+	};
+
+	const loadWeather = async () => {
+		if (!weatherTempNode || !weatherIconNode) return;
+		try {
+			const res = await fetch(
+				'https://api.open-meteo.com/v1/forecast?latitude=-33.8688&longitude=151.2093&current=temperature_2m,weather_code&timezone=Australia%2FSydney'
+			);
+			if (!res.ok) throw new Error('weather request failed');
+			const data = await res.json();
+			const current = data?.current;
+			if (!current) throw new Error('missing weather payload');
+			const temp = Math.round(current.temperature_2m);
+			const code = Number(current.weather_code);
+			weatherTempNode.textContent = `${temp} C`;
+			weatherIconNode.innerHTML = weatherIconFromCode(code);
+		} catch {
+			weatherTempNode.textContent = '-- C';
+			weatherIconNode.textContent = '--';
+		}
+	};
+
+	loadWeather();
+	setInterval(loadWeather, 10 * 60 * 1000);
+
+	const statusMessages = [
+		'Building things that are simple to use and easy to maintain.',
+		'Learning more about Kubernetes and platform engineering.',
+		'Improving developer workflows with better tooling.',
+		'Shipping portfolio updates and refining UI details.',
+	];
+
+	if (statusMessageNode) {
+		let messageIndex = 0;
+		setInterval(() => {
+			messageIndex = (messageIndex + 1) % statusMessages.length;
+			statusMessageNode.classList.add('is-changing');
+			setTimeout(() => {
+				statusMessageNode.textContent = statusMessages[messageIndex];
+				statusMessageNode.classList.remove('is-changing');
+			}, 180);
+		}, 5000);
+	}
+
+	const terminalCommands = [
+		'bun install',
+		'bun run build',
+		'docker compose up -d',
+		'git push origin main',
+		'bootc update',
+		'adb sideload ota.zip',
+		'tailscale up',
+	];
+
+	if (terminalCommandNode) {
+		let commandIndex = 0;
+		let charIndex = 0;
+		let isDeleting = false;
+
+		const runTypewriter = () => {
+			const currentCommand = terminalCommands[commandIndex];
+
+			if (isDeleting) {
+				charIndex = Math.max(0, charIndex - 1);
+			} else {
+				charIndex = Math.min(currentCommand.length, charIndex + 1);
+			}
+
+			terminalCommandNode.textContent = currentCommand.slice(0, charIndex);
+
+			let delay = isDeleting ? 46 : 86;
+			if (!isDeleting && charIndex === currentCommand.length) {
+				delay = 1100;
+				isDeleting = true;
+			} else if (isDeleting && charIndex === 0) {
+				delay = 300;
+				isDeleting = false;
+				commandIndex = (commandIndex + 1) % terminalCommands.length;
+			}
+
+			setTimeout(runTypewriter, delay);
+		};
+
+		terminalCommandNode.textContent = '';
+		setTimeout(runTypewriter, 250);
+	}
+</script>
+
+<style>
+	:root {
+		--bg: #090d12;
+		--tile: #10151c;
+		--tile-strong: #0c1118;
+		--text: #eef0f2;
+		--muted: #9da3ad;
+		--border: #303744;
+		--accent: #e24a53;
+	}
+
+	.page {
+		width: min(1120px, 100% - 1.5rem);
+		margin: 1.25rem auto 2.5rem;
+		position: relative;
+		z-index: 2;
+	}
+
+	.backdrop {
+		position: fixed;
+		inset: 0;
+		background:
+			radial-gradient(circle at 15% 5%, rgb(226 74 83 / 20%), transparent 28%),
+			radial-gradient(circle at 92% 20%, rgb(80 70 130 / 17%), transparent 26%),
+			linear-gradient(180deg, #0a0f16 0%, #090d12 100%);
+		z-index: 1;
+	}
+
+	.tile {
+		background: linear-gradient(180deg, #10151d, #0d1219);
+		border: 1px solid var(--border);
+		border-radius: 0 !important;
+		padding: 1.3rem;
+	}
+
+	.hero {
+		display: grid;
+		grid-template-columns: 1fr auto;
+		gap: 1.5rem;
+		align-items: center;
+		border-color: color-mix(in srgb, var(--accent), var(--border) 70%);
+	}
+
+	h1 {
+		margin: 0;
+		font-size: clamp(1.4rem, 3.4vw, 2rem);
+		font-weight: 500;
+		line-height: 1.35;
+		max-width: 32ch;
+	}
+
+	h1 strong {
+		font-weight: 700;
+	}
+
+	.socials {
+		display: flex;
+		gap: 0.8rem;
+		flex-wrap: wrap;
+		margin-top: 1.35rem;
+	}
+
+	.socials a {
+		display: inline-flex;
+		align-items: center;
+		gap: 0.45rem;
+		padding: 0.58rem 1rem;
+		border-radius: 0 !important;
+		border: 1px solid color-mix(in srgb, var(--accent), var(--border) 65%);
+		background: var(--tile-strong);
+		font-size: 0.92rem;
+		transition:
+			border-color 0.2s ease,
+			transform 0.2s ease;
+	}
+
+	.socials a:hover {
+		border-color: color-mix(in srgb, var(--accent), white 35%);
+		transform: translateY(-1px);
+	}
+
+	.socials svg {
+		width: 1rem;
+		height: 1rem;
+		display: block;
+		fill: currentColor;
+	}
+
+	.avatar {
+		width: 180px;
+		height: 180px;
+		position: relative;
+		display: grid;
+		place-items: center;
+		flex-shrink: 0;
+	}
+
+	.avatar::before {
+		content: '';
+		position: absolute;
+		inset: 8px;
+		border-radius: 999px;
+		background: #0f141d;
+		z-index: 0;
+	}
+
+	.avatar-ring {
+		position: absolute;
+		inset: 8px;
+		border-radius: 999px;
+		border: 1px dashed #3d4658;
+		z-index: 2;
+		pointer-events: none;
+	}
+
+	.avatar-photo {
+		position: absolute;
+		inset: 16px;
+		width: calc(100% - 32px);
+		height: calc(100% - 32px);
+		border-radius: 999px;
+		object-fit: cover;
+		object-position: center;
+		display: block;
+		border: 1px solid #3a4352;
+		box-shadow: 0 0.6rem 1.4rem rgb(0 0 0 / 35%);
+		z-index: 1;
+	}
+
+	.cards {
+		margin-top: 0.9rem;
+		display: grid;
+		gap: 0.9rem;
+		grid-template-columns: minmax(0, 1.3fr) minmax(0, 1fr);
+		align-items: start;
+	}
+
+	.cards-column {
+		display: grid;
+		gap: 0.9rem;
+		align-content: start;
+	}
+
+	h2 {
+		margin: 0;
+		font-size: 2rem;
+		font-size: clamp(1.2rem, 1.35vw, 1.8rem);
+	}
+
+	p,
+	li {
+		color: #ccd1d8;
+		line-height: 1.45;
+		font-size: 1.03rem;
+	}
+
+	.tool-grid {
+		margin: 0.46rem 0 0.58rem;
+		display: grid;
+		grid-template-columns: repeat(3, minmax(0, 1fr));
+		gap: 0.4rem;
+	}
+
+	.tool-chip {
+		display: inline-flex;
+		align-items: center;
+		gap: 0.45rem;
+		padding: 0.5rem 0.86rem;
+		border: 1px solid color-mix(in srgb, var(--accent), var(--border) 70%);
+		background: var(--tile-strong);
+		font-size: 0.88rem;
+		line-height: 1.2;
+		color: #cfd4de;
+		transition:
+			border-color 0.2s ease,
+			transform 0.2s ease;
+	}
+
+	.tool-chip:hover {
+		border-color: color-mix(in srgb, var(--accent), white 35%);
+		transform: translateY(-1px);
+	}
+
+	.tool-chip svg {
+		width: 1rem;
+		height: 1rem;
+		display: block;
+	}
+
+	.about {
+		padding: 0.76rem;
+	}
+
+	.about h2 {
+		font-size: 1.52rem;
+		margin-bottom: 0.16rem;
+	}
+
+	.about p {
+		font-size: 0.88rem;
+		line-height: 1.24;
+		margin: 0.24rem 0;
+	}
+
+	.about p:last-child {
+		margin-top: 0.42rem;
+	}
+
+	.clock {
+		font-family: 'IBM Plex Mono', monospace;
+		font-size: clamp(1.4rem, 3vw, 2rem);
+		margin: 0;
+	}
+
+	.time-head {
+		display: flex;
+		align-items: center;
+		justify-content: flex-start;
+	}
+
+	.clock-row {
+		display: grid !important;
+		grid-template-columns: minmax(0, 1fr) auto;
+		align-items: center;
+		gap: 0.75rem;
+		margin: 1.1rem 0 0.45rem;
+		width: 100%;
+	}
+
+	.weather-chip {
+		display: inline-flex;
+		flex-direction: column;
+		align-items: center;
+		justify-content: center;
+		gap: 0.28rem;
+		padding: 0.52rem 0.95rem;
+		border: 1px solid color-mix(in srgb, var(--accent), var(--border) 72%);
+		background: #0c1118;
+		font-size: 1.2rem;
+		color: #cfd4de;
+		line-height: 1.05;
+		white-space: nowrap;
+		justify-self: end;
+		min-width: 4.3rem;
+	}
+
+	#weather-icon {
+		display: inline-flex;
+		align-items: center;
+		justify-content: center;
+		width: 1.2rem;
+		height: 1.2rem;
+		font-size: 1.2rem;
+		line-height: 1;
+	}
+
+	#weather-icon svg {
+		width: 1.2rem;
+		height: 1.2rem;
+		display: block;
+		stroke: currentColor;
+		fill: none;
+		stroke-width: 1.9;
+		stroke-linecap: round;
+		stroke-linejoin: round;
+	}
+
+	#weather-temp {
+		font-size: 1.2rem;
+		line-height: 1;
+	}
+
+	.meta {
+		display: flex;
+		flex-direction: column;
+		gap: 1rem;
+	}
+
+	.reading {
+		display: flex;
+		flex-direction: column;
+		gap: 0.35rem;
+	}
+
+	.reading-title {
+		margin: 0;
+		font-weight: 600;
+		font-size: 1.02rem;
+		color: #dbe1ec;
+	}
+
+	.reading-meta {
+		margin: 0;
+		font-size: 0.9rem;
+		color: #9aa2af;
+	}
+
+	.now-tile {
+		display: flex;
+		flex-direction: column;
+		gap: 0.85rem;
+	}
+
+	.signature {
+		align-self: start;
+		padding-block: 0.95rem;
+	}
+
+	.meta-block p:last-child {
+		margin-bottom: 0;
+	}
+
+	.meta-divider {
+		height: 1px;
+		background: color-mix(in srgb, var(--border), white 8%);
+	}
+
+	.muted {
+		color: var(--muted);
+	}
+
+	.status-top {
+		display: flex;
+		justify-content: space-between;
+		align-items: center;
+	}
+
+	.dot {
+		width: 0.8rem;
+		height: 0.8rem;
+		border-radius: 999px;
+		background: #ff3b46;
+		box-shadow:
+			0 0 0.3rem rgb(255 59 70 / 65%),
+			0 0 0.9rem rgb(255 59 70 / 55%);
+		animation: livePulse 2.4s ease-in-out infinite;
+	}
+
+	@keyframes livePulse {
+		0%,
+		100% {
+			filter: brightness(0.7);
+			box-shadow:
+				0 0 0.15rem rgb(255 59 70 / 45%),
+				0 0 0.45rem rgb(255 59 70 / 35%);
+		}
+		50% {
+			filter: brightness(1.35);
+			box-shadow:
+				0 0 0.35rem rgb(255 59 70 / 85%),
+				0 0 1.2rem rgb(255 59 70 / 75%);
+		}
+	}
+
+	.signature p {
+		margin: 0;
+		font-size: 0.95rem;
+		color: var(--muted);
+	}
+
+	.accent {
+		color: var(--accent);
+		text-decoration: none;
+	}
+
+	.accent:hover {
+		text-decoration: underline;
+		text-underline-offset: 0.16rem;
+	}
+
+	.terminal {
+		background: linear-gradient(180deg, #0f151d, #0b1118);
+	}
+
+	.status-message {
+		margin: 0;
+		font-size: 1.03rem;
+		line-height: 1.45;
+		color: #ccd1d8;
+		transition: opacity 0.18s ease;
+		min-height: calc(1.45em * 2);
+		max-height: calc(1.45em * 2);
+		overflow: hidden;
+	}
+
+		.status-message.is-changing {
+			opacity: 0.18;
+		}
+
+	.terminal-title {
+		position: static !important;
+		display: block !important;
+		visibility: visible !important;
+		opacity: 1 !important;
+		margin: 0 0 0.65rem;
+		font-size: 1.22rem;
+		font-weight: 600;
+		letter-spacing: 0.01em;
+		color: #d9dce3 !important;
+		line-height: 1.2;
+		text-align: left !important;
+	}
+
+	.terminal-output {
+		margin-top: 0;
+	}
+
+	.terminal-line {
+		margin: 0;
+		font-family: 'IBM Plex Mono', monospace;
+		font-size: 1.02rem;
+		line-height: 1.6;
+		color: #d7dce5;
+		display: flex;
+		align-items: center;
+	}
+
+	.prompt {
+		color: #ff8a94;
+		display: inline-block;
+		width: 1ch;
+		margin-right: 0.45rem;
+		animation: promptBlink 0.9s step-end infinite;
+		will-change: opacity;
+	}
+
+	#terminal-command {
+		display: inline-block;
+		white-space: nowrap;
+	}
+
+	@keyframes promptBlink {
+		0%,
+		49% {
+			opacity: 1;
+		}
+		50%,
+		100% {
+			opacity: 0;
+		}
+	}
+
+	@media (max-width: 980px) {
+		.cards {
+			grid-template-columns: repeat(2, minmax(0, 1fr));
+		}
+
+		.tool-grid {
+			grid-template-columns: repeat(2, minmax(0, 1fr));
+		}
+	}
+
+	@media (max-width: 760px) {
+		.hero {
+			grid-template-columns: 1fr;
+		}
+
+		.avatar {
+			width: 140px;
+			height: 140px;
+			justify-self: center;
+			margin-inline: auto;
+		}
+
+		.avatar-photo {
+			inset: 14px;
+			width: calc(100% - 28px);
+			height: calc(100% - 28px);
+		}
+	}
+
+	@media (max-width: 640px) {
+		.page {
+			width: min(1120px, 100% - 1rem);
+			margin-top: 0.8rem;
+		}
+
+		.socials {
+			display: grid;
+			grid-template-columns: repeat(2, minmax(0, 1fr));
+			gap: 0.6rem;
+		}
+
+		.socials a {
+			width: 100%;
+			justify-content: center;
+			padding: 0.62rem 0.7rem;
+		}
+
+		.cards {
+			grid-template-columns: 1fr;
+		}
+
+		.tool-grid {
+			grid-template-columns: repeat(2, minmax(0, 1fr));
+		}
+
+	}
+
+	@media (max-width: 380px) {
+		.socials {
+			grid-template-columns: 1fr;
+		}
+
+		.tool-grid {
+			grid-template-columns: 1fr;
+		}
+	}
+</style>
