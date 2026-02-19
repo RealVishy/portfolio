@@ -68,3 +68,19 @@ Worker source is in `worker/`.
 2. Set `ALLOWED_ORIGIN` in `worker/wrangler.toml`.
 3. Deploy:
    - `bunx wrangler deploy`
+
+## CI Deploys (GitHub Actions)
+
+This repo includes CI-controlled deploy workflows:
+
+- `.github/workflows/deploy-pages.yml` deploys Astro `dist/` to Cloudflare Pages on PRs and `main`.
+- `.github/workflows/deploy-worker.yml` deploys the Spotify Worker on `main` when `worker/**` changes.
+
+Configure these repository secrets:
+
+- `CLOUDFLARE_API_TOKEN`
+- `CLOUDFLARE_ACCOUNT_ID`
+
+Configure this repository variable:
+
+- `CLOUDFLARE_PAGES_PROJECT_NAME` (exact Cloudflare Pages project name)

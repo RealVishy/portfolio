@@ -1,0 +1,67 @@
+name: Deploy Cloudflare Pages
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+  workflow_dispatch:
+
+concurrency:
+  group: pages-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      deployments: write
+      pull-requests: write
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Bun
+        uses: oven-sh/setup-bun@v2
+        with:
+          bun-version: latest
+
+      - name: Install dependencies
+        run: bun install --frozen-lockfile
+
+      - name: Build site
+        run: bun run build
+
+      - name: Validate Cloudflare Pages project variable
+        run: |
+          if [ -z "${{ vars.CLOUDFLARE_PAGES_PROJECT_NAME }}" ]; then
+            echo "Missing repo variable: CLOUDFLARE_PAGES_PROJECT_NAME"
+            exit 1
+          fi
+
+      - name: Deploy to Cloudflare Pages
+        id: pages-deploy
+        uses: cloudflare/wrangler-action@v3
+        with:
+          apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+          gitHubToken: ${{ secrets.GITHUB_TOKEN }}
+          command: >-
+            pages deploy dist
+            --project-name=${{ vars.CLOUDFLARE_PAGES_PROJECT_NAME }}
+            --branch=${{ github.head_ref || github.ref_name }}
+
+      - name: Publish deployment summary
+        run: |
+          {
+            echo "## Cloudflare Pages Deployment";
+            echo "";
+            echo "- Project: ${{ vars.CLOUDFLARE_PAGES_PROJECT_NAME }}";
+            echo "- Branch: ${{ github.head_ref || github.ref_name }}";
+            echo "- URL: ${{ steps.pages-deploy.outputs.deployment-url }}";
+            echo "- Alias: ${{ steps.pages-deploy.outputs.pages-deployment-alias-url }}";
+          } >> "$GITHUB_STEP_SUMMARY"
