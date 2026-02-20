@@ -44,11 +44,21 @@ const json = (body: unknown, status: number, origin: string) =>
 		},
 	});
 
+const parseAllowedOrigins = (value?: string) =>
+	(value || '')
+		.split(',')
+		.map((origin) => origin.trim())
+		.filter(Boolean);
+
 const resolveOrigin = (request: Request, allowedOrigin?: string) => {
-	if (!allowedOrigin) return '*';
 	const requestOrigin = request.headers.get('Origin');
-	if (requestOrigin && requestOrigin === allowedOrigin) return allowedOrigin;
-	return allowedOrigin;
+	const allowedOrigins = parseAllowedOrigins(allowedOrigin);
+
+	if (!allowedOrigins.length) return requestOrigin || '*';
+	if (allowedOrigins.includes('*')) return '*';
+	if (!requestOrigin) return allowedOrigins[0];
+	if (allowedOrigins.includes(requestOrigin)) return requestOrigin;
+	return allowedOrigins[0];
 };
 
 const toPayload = (track: SpotifyTrack, isPlaying: boolean): SpotifyNowPlayingPayload => {
@@ -119,14 +129,14 @@ const getRecentlyPlayed = async (accessToken: string) => {
 		headers: { Authorization: `Bearer ${accessToken}` },
 	});
 
-	if (!response.ok) throw new Error('spotify recently-played request failed');
+	if (!response.ok) return null;
 
 	const data = (await response.json()) as {
 		items?: Array<{ track?: SpotifyTrack }>;
 	};
 
 	const track = data.items?.[0]?.track;
-	if (!track) throw new Error('no recently played tracks found');
+	if (!track) return null;
 	return toPayload(track, false);
 };
 
@@ -162,7 +172,21 @@ export default {
 			}
 
 			const recentlyPlayed = await getRecentlyPlayed(accessToken);
-			return json(recentlyPlayed, 200, origin);
+			if (recentlyPlayed) return json(recentlyPlayed, 200, origin);
+
+			return json(
+				{
+					isPlaying: false,
+					trackName: 'Nothing playing right now',
+					artists: 'Start a Spotify track to update this tile.',
+					albumName: '',
+					albumImageUrl: '',
+					trackUrl: 'https://open.spotify.com',
+					lastUpdated: new Date().toISOString(),
+				},
+				200,
+				origin
+			);
 		} catch {
 			return json({ error: 'spotify_unavailable' }, 502, origin);
 		}

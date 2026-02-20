@@ -14,6 +14,9 @@ This Worker exchanges a Spotify refresh token for an access token and returns a 
 4. Deploy:
    - `bunx wrangler deploy`
 
+`ALLOWED_ORIGIN` can be a single origin or a comma-separated list, for example:
+`https://yourdomain.com,https://your-site.pages.dev`
+
 ## Response shape
 
 ```json
