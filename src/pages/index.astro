@@ -188,9 +188,18 @@ const tools = [
 	</main>
 </Layout>
 
-<script is:inline>
-	const terminalCommandNode = document.querySelector('#terminal-command');
-	const statusMessageNode = document.querySelector('#status-message-text');
+	<script is:inline>
+		const pageNode = document.querySelector('.page');
+		const terminalCommandNode = document.querySelector('#terminal-command');
+		const statusMessageNode = document.querySelector('#status-message-text');
+
+		if (pageNode && !window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+			const introTiles = pageNode.querySelectorAll('.tile');
+			pageNode.classList.add('is-intro-active');
+			introTiles.forEach((tile, index) => {
+				tile.style.setProperty('--intro-delay', `${index * 80}ms`);
+			});
+		}
 
 		const statusMessages = [
 			'Studying Software Engineering (Honours) at UTS.',
@@ -281,9 +290,30 @@ const tools = [
 			transition: border-color 0.2s ease;
 		}
 
-		.tile:hover,
-		.tile:focus-within {
-			border-color: color-mix(in srgb, var(--accent), var(--border) 45%);
+			.tile:hover,
+			.tile:focus-within {
+				border-color: color-mix(in srgb, var(--accent), var(--border) 45%);
+			}
+
+		.page.is-intro-active .tile {
+			opacity: 0;
+			transform: translateY(90px);
+			animation: tileRushIn 720ms cubic-bezier(0.18, 0.9, 0.24, 1) forwards;
+			animation-delay: var(--intro-delay, 0ms);
+		}
+
+		@keyframes tileRushIn {
+			0% {
+				opacity: 0;
+				transform: translateY(90px);
+			}
+			75% {
+				opacity: 1;
+			}
+			100% {
+				opacity: 1;
+				transform: translateY(0);
+			}
 		}
 
 	.hero {
@@ -867,10 +897,10 @@ const tools = [
 
 	}
 
-	@media (max-width: 380px) {
-		.socials {
-			grid-template-columns: 1fr;
-		}
+		@media (max-width: 380px) {
+			.socials {
+				grid-template-columns: 1fr;
+			}
 
 		.tool-grid {
 			grid-template-columns: 1fr;
@@ -880,9 +910,18 @@ const tools = [
 			grid-template-columns: 56px minmax(0, 1fr);
 		}
 
-		.spotify-art-link {
-			width: 56px;
-			height: 56px;
+			.spotify-art-link {
+				width: 56px;
+				height: 56px;
+			}
 		}
-	}
-</style>
+
+		@media (prefers-reduced-motion: reduce) {
+			.page.is-intro-active .tile {
+				animation: none;
+				opacity: 1;
+				transform: none;
+				filter: none;
+			}
+		}
+	</style>
