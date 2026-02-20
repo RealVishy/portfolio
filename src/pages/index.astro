@@ -30,10 +30,11 @@ const tools = [
 	<main class="page">
 			<section class="tile hero">
 				<div>
-					<h1>
-						Hi, I&apos;m <strong>Vishwas Parpattegar</strong>, a software engineering student with a
-						strong focus on dev experience, containerisation, and CI/CD.
-					</h1>
+						<h1>
+								Hi, I&apos;m <strong>Vishwas Parpattegar</strong>, a Software Engineering student at UTS
+								with internship experience at Ericsson, focused on developer experience,
+								containerisation, and CI/CD.
+						</h1>
 				<div class="socials">
 					<a href="https://github.com/RealVishy" target="_blank" rel="noreferrer">
 						<svg viewBox="0 0 24 24" aria-hidden="true">
@@ -49,7 +50,7 @@ const tools = [
 						</svg>
 						<span>LinkedIn</span>
 					</a>
-					<a href="mailto:vishwasparpattegar@gmail.com">
+						<a href="https://realvishy.github.io/resume/resume.pdf" target="_blank" rel="noreferrer">
 						<svg viewBox="0 0 24 24" aria-hidden="true">
 							<path
 								d="M6 2a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8.8L14.2 2H6Zm7 1.7 4.3 4.3H13V3.7Zm-4 7.3h6a1 1 0 1 1 0 2H9a1 1 0 1 1 0-2Zm0 4h6a1 1 0 1 1 0 2H9a1 1 0 1 1 0-2Z"
@@ -78,11 +79,12 @@ const tools = [
 		</section>
 
 		<section class="cards">
-			<article class="tile about">
-				<h2>About me</h2>
-				<p>
-					Software Engineering Student @ UTS.<br />Primary tools:
-				</p>
+				<article class="tile about">
+					<h2>About me</h2>
+					<p>
+						Bachelor of Engineering (Honours), Software Major @ UTS (Feb 2023 - Oct 2027).<br />
+						Primary tools:
+					</p>
 				<div class="tool-grid">
 					{
 						tools.map((tool) => (
@@ -95,8 +97,11 @@ const tools = [
 						))
 					}
 				</div>
-				<p>I focus on open source and developer tooling.</p>
-			</article>
+					<p>
+							I build reliable local-to-production workflows with Docker, Kubernetes, and GitHub
+							Actions, with a strong focus on practical developer tooling.
+						</p>
+				</article>
 
 			<article class="tile meta">
 				<div class="meta-block">
@@ -115,14 +120,14 @@ const tools = [
 			</article>
 
 			<article class="tile now-tile">
-				<div class="status-top">
-					<h2>Now</h2>
-					<span class="dot" aria-hidden="true"></span>
-				</div>
-				<p id="status-message-text" class="status-message">
-					Attending university lectures and building portfolio projects.
-				</p>
-			</article>
+					<div class="status-top">
+						<h2>Now</h2>
+						<span class="dot" aria-hidden="true"></span>
+					</div>
+					<p id="status-message-text" class="status-message">
+						Studying Software Engineering at UTS and building developer tooling projects.
+					</p>
+				</article>
 
 			<article class="tile spotify" id="spotify-tile">
 				<div class="spotify-head">
@@ -187,12 +192,12 @@ const tools = [
 	const terminalCommandNode = document.querySelector('#terminal-command');
 	const statusMessageNode = document.querySelector('#status-message-text');
 
-	const statusMessages = [
-		'Building things that are simple to use and easy to maintain.',
-		'Learning more about Kubernetes and platform engineering.',
-		'Improving developer workflows with better tooling.',
-		'Shipping portfolio updates and refining UI details.',
-	];
+		const statusMessages = [
+			'Studying Software Engineering (Honours) at UTS.',
+			'Serving as Secretary of the UTS Programming Society.',
+			'Running Docker and GitHub workshops for students.',
+			'Building practical CI/CD and Kubernetes workflows.',
+		];
 
 	if (statusMessageNode) {
 		let messageIndex = 0;
