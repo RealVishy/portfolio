@@ -10,6 +10,15 @@ type SpotifyNowPlayingPayload = {
 	lastUpdated?: string;
 };
 
+type SpotifyViewState = {
+	spotifyState: 'loading' | 'error' | 'playing' | 'idle';
+	stateLabel: string;
+	trackTitle: string;
+	trackArtists: string;
+	imageUrl: string;
+	trackUrl: string;
+};
+
 const DEFAULT_TRACK_URL = 'https://open.spotify.com';
 const POLL_INTERVAL_MS = 15_000;
 const ENDPOINT = '/api/spotify-now-playing';
@@ -23,14 +32,25 @@ export default function SpotifyNowPlayingController() {
 		const stateNode = document.querySelector<HTMLElement>('#spotify-state');
 		const titleNode = document.querySelector<HTMLElement>('#spotify-track-title');
 		const artistsNode = document.querySelector<HTMLElement>('#spotify-artists');
+		const metaNode = document.querySelector<HTMLElement>('#spotify-tile .spotify-meta');
 		const artNode = document.querySelector<HTMLImageElement>('#spotify-art');
 		const linkNodes = Array.from(
 			document.querySelectorAll<HTMLAnchorElement>('[data-spotify-link]')
 		);
 
-		if (!tileNode || !stateNode || !titleNode || !artistsNode || !artNode || !linkNodes.length) {
+		if (
+			!tileNode ||
+			!stateNode ||
+			!titleNode ||
+			!artistsNode ||
+			!metaNode ||
+			!artNode ||
+			!linkNodes.length
+		) {
 			return;
 		}
+
+		const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
 		const applyLink = (url: string) => {
 			for (const node of linkNodes) {
@@ -38,37 +58,100 @@ export default function SpotifyNowPlayingController() {
 			}
 		};
 
-		const setCommon = (trackTitle: string, trackArtists: string, imageUrl?: string, trackUrl?: string) => {
-			titleNode.textContent = trackTitle;
-			artistsNode.textContent = trackArtists;
-			artNode.src = imageUrl || PLACEHOLDER_ART;
-			applyLink(trackUrl || DEFAULT_TRACK_URL);
+		const clearMotionClasses = () => {
+			artNode.classList.remove('is-swapping');
+			metaNode.classList.remove('is-swapping');
+		};
+
+		const applyView = (viewState: SpotifyViewState) => {
+			tileNode.dataset.spotifyState = viewState.spotifyState;
+			stateNode.textContent = viewState.stateLabel;
+			titleNode.textContent = viewState.trackTitle;
+			artistsNode.textContent = viewState.trackArtists;
+			artNode.src = viewState.imageUrl;
+			applyLink(viewState.trackUrl);
+		};
+
+		let lastViewState: SpotifyViewState | null = null;
+		let swapTimeoutId: number | undefined;
+		let motionResetTimeoutId: number | undefined;
+
+		const setViewState = (nextViewState: SpotifyViewState) => {
+			const hasPrevious = Boolean(lastViewState);
+			const stateChanged = lastViewState?.stateLabel !== nextViewState.stateLabel;
+			const textChanged =
+				lastViewState?.trackTitle !== nextViewState.trackTitle ||
+				lastViewState?.trackArtists !== nextViewState.trackArtists;
+			const artChanged = lastViewState?.imageUrl !== nextViewState.imageUrl;
+			const shouldAnimate =
+				hasPrevious && !prefersReducedMotion && (stateChanged || textChanged || artChanged);
+
+			window.clearTimeout(swapTimeoutId);
+			window.clearTimeout(motionResetTimeoutId);
+			stateNode.classList.remove('is-state-bump');
+			clearMotionClasses();
+
+			if (!shouldAnimate) {
+				applyView(nextViewState);
+				lastViewState = nextViewState;
+				return;
+			}
+
+			if (stateChanged) {
+				stateNode.classList.add('is-state-bump');
+			}
+			if (artChanged) {
+				artNode.classList.add('is-swapping');
+			}
+			if (textChanged) {
+				metaNode.classList.add('is-swapping');
+			}
+
+			swapTimeoutId = window.setTimeout(() => {
+				applyView(nextViewState);
+				motionResetTimeoutId = window.setTimeout(() => {
+					stateNode.classList.remove('is-state-bump');
+					clearMotionClasses();
+				}, 130);
+			}, 110);
+
+			lastViewState = nextViewState;
 		};
 
 		const setLoading = () => {
-			tileNode.dataset.spotifyState = 'loading';
-			stateNode.textContent = 'Loading';
-			setCommon('Checking Spotify...', 'Fetching your listening status.');
+			setViewState({
+				spotifyState: 'loading',
+				stateLabel: 'Loading',
+				trackTitle: 'Checking Spotify...',
+				trackArtists: 'Fetching your listening status.',
+				imageUrl: PLACEHOLDER_ART,
+				trackUrl: DEFAULT_TRACK_URL,
+			});
 		};
 
 		const setError = () => {
-			tileNode.dataset.spotifyState = 'error';
-			stateNode.textContent = 'Unavailable';
-			setCommon('Spotify unavailable', 'Unable to load listening status right now.');
+			setViewState({
+				spotifyState: 'error',
+				stateLabel: 'Unavailable',
+				trackTitle: 'Spotify unavailable',
+				trackArtists: 'Unable to load listening status right now.',
+				imageUrl: PLACEHOLDER_ART,
+				trackUrl: DEFAULT_TRACK_URL,
+			});
 		};
 
 		const setNowPlaying = (payload: SpotifyNowPlayingPayload) => {
 			const artistsAndAlbum = payload.albumName
 				? `${payload.artists} • ${payload.albumName}`
 				: payload.artists;
-			tileNode.dataset.spotifyState = payload.isPlaying ? 'playing' : 'idle';
-			stateNode.textContent = payload.isPlaying ? 'Live' : 'Last played';
-			setCommon(
-				payload.trackName || 'Unknown track',
-				artistsAndAlbum || 'Unknown artist',
-				payload.albumImageUrl,
-				payload.trackUrl
-			);
+			setViewState({
+				spotifyState: payload.isPlaying ? 'playing' : 'idle',
+				stateLabel: payload.isPlaying ? 'Live' : 'Last played',
+				trackTitle: payload.trackName || 'Unknown track',
+				trackArtists: artistsAndAlbum || 'Unknown artist',
+				imageUrl: payload.albumImageUrl || PLACEHOLDER_ART,
+				trackUrl: payload.trackUrl || DEFAULT_TRACK_URL,
+			});
 		};
 
 		let isRequestInFlight = false;
@@ -100,6 +183,8 @@ export default function SpotifyNowPlayingController() {
 		return () => {
 			destroyed = true;
 			window.clearInterval(intervalId);
+			window.clearTimeout(swapTimeoutId);
+			window.clearTimeout(motionResetTimeoutId);
 		};
 	}, []);
 

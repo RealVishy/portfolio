@@ -192,12 +192,84 @@ const tools = [
 		const pageNode = document.querySelector('.page');
 		const terminalCommandNode = document.querySelector('#terminal-command');
 		const statusMessageNode = document.querySelector('#status-message-text');
+		const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
-		if (pageNode && !window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+		if (pageNode && !prefersReducedMotion) {
 			const introTiles = pageNode.querySelectorAll('.tile');
+			const introDurationMs = 720;
 			pageNode.classList.add('is-intro-active');
+			let maxIntroDelayMs = 0;
 			introTiles.forEach((tile, index) => {
-				tile.style.setProperty('--intro-delay', `${index * 80}ms`);
+				const delay = index * 80;
+				maxIntroDelayMs = Math.max(maxIntroDelayMs, delay);
+				tile.style.setProperty('--intro-delay', `${delay}ms`);
+			});
+			window.setTimeout(() => {
+				pageNode.classList.remove('is-intro-active');
+			}, maxIntroDelayMs + introDurationMs + 90);
+		}
+
+		if (
+			pageNode &&
+			!prefersReducedMotion &&
+			window.matchMedia('(hover: hover) and (pointer: fine)').matches
+		) {
+			const depthTiles = pageNode.querySelectorAll('.tile');
+			const maxTilt = 5;
+
+			const clamp = (value, min, max) => Math.min(max, Math.max(min, value));
+
+				depthTiles.forEach((tile) => {
+					let hoverRect = null;
+					let pointerX = 0;
+					let pointerY = 0;
+					let rafId = 0;
+
+					const applyDepth = () => {
+						if (!hoverRect) return;
+
+						const x = clamp(pointerX - hoverRect.left, 0, hoverRect.width);
+						const y = clamp(pointerY - hoverRect.top, 0, hoverRect.height);
+						const xRatio = x / hoverRect.width - 0.5;
+						const yRatio = y / hoverRect.height - 0.5;
+						const rotateX = clamp(-yRatio * 8, -maxTilt, maxTilt);
+						const rotateY = clamp(xRatio * 8, -maxTilt, maxTilt);
+
+						tile.style.setProperty('--rx', `${rotateX.toFixed(2)}deg`);
+						tile.style.setProperty('--ry', `${rotateY.toFixed(2)}deg`);
+					};
+
+					const paintDepth = () => {
+						rafId = 0;
+						applyDepth();
+					};
+
+					const resetDepth = () => {
+						window.cancelAnimationFrame(rafId);
+						rafId = 0;
+					hoverRect = null;
+						tile.classList.remove('is-depth-active');
+						tile.style.setProperty('--rx', '0deg');
+						tile.style.setProperty('--ry', '0deg');
+					};
+
+					tile.addEventListener('mouseenter', (event) => {
+						hoverRect = tile.getBoundingClientRect();
+						pointerX = event.clientX;
+						pointerY = event.clientY;
+						applyDepth();
+						tile.classList.add('is-depth-active');
+					});
+
+				tile.addEventListener('mousemove', (event) => {
+					pointerX = event.clientX;
+					pointerY = event.clientY;
+					if (!rafId) {
+						rafId = window.requestAnimationFrame(paintDepth);
+					}
+				});
+
+				tile.addEventListener('mouseleave', resetDepth);
 			});
 		}
 
@@ -287,13 +359,26 @@ const tools = [
 			border: 1px solid var(--border);
 			border-radius: 0 !important;
 			padding: 1.3rem;
-			transition: border-color 0.2s ease;
+			position: relative;
+			overflow: hidden;
+			isolation: isolate;
+			transform-style: preserve-3d;
+			will-change: transform;
+			--rx: 0deg;
+			--ry: 0deg;
+			transition:
+				border-color 0.2s ease,
+				transform 0.22s ease;
 		}
 
 			.tile:hover,
 			.tile:focus-within {
 				border-color: color-mix(in srgb, var(--accent), var(--border) 45%);
 			}
+
+		.tile.is-depth-active {
+			transform: perspective(900px) rotateX(var(--rx)) rotateY(var(--ry)) translateY(-1px);
+		}
 
 		.page.is-intro-active .tile {
 			opacity: 0;
@@ -645,16 +730,33 @@ const tools = [
 		border-color: color-mix(in srgb, var(--accent), white 35%);
 	}
 
-	#spotify-art {
-		display: block;
-		width: 100%;
-		height: 100%;
-		object-fit: cover;
-	}
+		#spotify-art {
+			display: block;
+			width: 100%;
+			height: 100%;
+			object-fit: cover;
+			transform-origin: center;
+			transition:
+				opacity 0.18s ease,
+				transform 0.18s ease;
+		}
 
-	.spotify-meta {
-		min-width: 0;
-	}
+		#spotify-art.is-swapping {
+			opacity: 0.14;
+			transform: scale(0.97);
+		}
+
+		.spotify-meta {
+			min-width: 0;
+			transition:
+				opacity 0.18s ease,
+				transform 0.18s ease;
+		}
+
+		.spotify-meta.is-swapping {
+			opacity: 0.18;
+			transform: translateY(4px);
+		}
 
 	.spotify-title {
 		display: block;
@@ -672,15 +774,34 @@ const tools = [
 		color: color-mix(in srgb, var(--accent), var(--text) 68%);
 	}
 
-	.spotify-artists {
-		margin: 0;
-		font-size: 0.9rem;
+		.spotify-artists {
+			margin: 0;
+			font-size: 0.9rem;
 		color: var(--muted);
 		line-height: 1.35;
 		overflow: hidden;
 		text-overflow: ellipsis;
-		white-space: nowrap;
-	}
+			white-space: nowrap;
+		}
+
+		.spotify-state.is-state-bump {
+			animation: spotifyStateBump 0.24s ease;
+		}
+
+		@keyframes spotifyStateBump {
+			0% {
+				transform: translateY(2px);
+				filter: brightness(0.86);
+			}
+			65% {
+				transform: translateY(-1px);
+				filter: brightness(1.08);
+			}
+			100% {
+				transform: translateY(0);
+				filter: brightness(1);
+			}
+		}
 
 	.now-tile {
 		display: flex;
@@ -922,6 +1043,16 @@ const tools = [
 				opacity: 1;
 				transform: none;
 				filter: none;
+			}
+
+			.tile,
+			#spotify-art,
+			.spotify-meta {
+				transition: none;
+			}
+
+			.spotify-state.is-state-bump {
+				animation: none;
 			}
 		}
 	</style>
