@@ -1,72 +1,39 @@
-# Astro Starter Kit: Basics
+# Vishwas Portfolio
 
-```sh
-bun create astro@latest -- --template basics
-```
+Astro portfolio site with a bento-style layout and small interactive islands.
 
-> 🧑‍🚀 **Seasoned astronaut?** Delete this file. Have fun!
+## Commands
 
-## 🚀 Project Structure
+- `bun install`: install dependencies.
+- `bun run dev`: start local development server.
+- `bun run build`: build production assets into `dist/`.
+- `bun run preview`: preview the production build.
+- `bun run astro -- check`: run Astro diagnostics and type checks.
 
-Inside of your Astro project, you'll see the following folders and files:
+## Structure
 
-```text
-/
-├── public/
-│   └── favicon.svg
-├── src
-│   ├── assets
-│   │   └── profile-photo.png
-│   ├── components
-│   │   ├── CurrentConditionsController.tsx
-│   │   ├── SpotifyNowPlayingController.tsx
-│   │   └── ThemeToggleController.tsx
-│   ├── layouts
-│   │   └── Layout.astro
-│   └── pages
-│       └── index.astro
-└── package.json
-```
+- `src/pages/index.astro`: main page layout and tile markup.
+- `src/components/`: interactive controllers (time, terminal, spotify, etc.).
+- `src/layouts/Layout.astro`: page shell and global metadata.
+- `functions/api/spotify-now-playing.ts`: Cloudflare Pages Function for Spotify data.
+- `public/`: static assets.
 
-To learn more about the folder structure of an Astro project, refer to [our guide on project structure](https://docs.astro.build/en/basics/project-structure/).
+## Spotify Now Playing
 
-## 🧞 Commands
+The Spotify tile fetches from a same-origin endpoint:
 
-All commands are run from the root of the project, from a terminal:
+- `GET /api/spotify-now-playing`
 
-| Command                   | Action                                           |
-| :------------------------ | :----------------------------------------------- |
-| `bun install`             | Installs dependencies                            |
-| `bun dev`             | Starts local dev server at `localhost:4321`      |
-| `bun build`           | Build your production site to `./dist/`          |
-| `bun preview`         | Preview your build locally, before deploying     |
-| `bun astro ...`       | Run CLI commands like `astro add`, `astro check` |
-| `bun astro -- --help` | Get help using the Astro CLI                     |
+This endpoint is implemented in `functions/api/spotify-now-playing.ts` and runs on Cloudflare Pages Functions.
 
-## 👀 Want to learn more?
+Set these **Cloudflare Pages** production secrets:
 
-Feel free to check [our documentation](https://docs.astro.build) or jump into our [Discord server](https://astro.build/chat).
+- `SPOTIFY_CLIENT_ID`
+- `SPOTIFY_CLIENT_SECRET`
+- `SPOTIFY_REFRESH_TOKEN`
 
-## Spotify Now Playing Tile
+Optional:
 
-This portfolio includes a Spotify now-playing Astro island that polls a Cloudflare Worker endpoint.
+- `ALLOWED_ORIGIN` (comma-separated allowlist, defaults to permissive behavior)
 
-### Frontend env
-
-Copy `.env.example` to `.env` and set:
-
-```sh
-PUBLIC_SPOTIFY_NOW_PLAYING_URL="https://spotify-now-playing.<your-subdomain>.workers.dev"
-```
-
-### Worker
-
-Worker source is in `worker/`.
-
-1. Set Worker secrets:
-   - `bunx wrangler secret put SPOTIFY_CLIENT_ID`
-   - `bunx wrangler secret put SPOTIFY_CLIENT_SECRET`
-   - `bunx wrangler secret put SPOTIFY_REFRESH_TOKEN`
-2. Set `ALLOWED_ORIGIN` in `worker/wrangler.toml`.
-3. Deploy:
-   - `bunx wrangler deploy`
+No public frontend env var is required for Spotify anymore.

@@ -12,7 +12,7 @@ type SpotifyNowPlayingPayload = {
 
 const DEFAULT_TRACK_URL = 'https://open.spotify.com';
 const POLL_INTERVAL_MS = 15_000;
-const ENDPOINT = import.meta.env.PUBLIC_SPOTIFY_NOW_PLAYING_URL;
+const ENDPOINT = '/api/spotify-now-playing';
 const PLACEHOLDER_ART = `data:image/svg+xml,${encodeURIComponent(
 	"<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'><defs><linearGradient id='g' x1='0' y1='0' x2='1' y2='1'><stop offset='0' stop-color='#131b26'/><stop offset='1' stop-color='#0c121a'/></linearGradient></defs><rect width='64' height='64' fill='url(#g)'/><circle cx='32' cy='32' r='15' fill='none' stroke='#2f3a4b' stroke-width='2'/><circle cx='32' cy='32' r='2.8' fill='#2f3a4b'/></svg>"
 )}`;
@@ -70,11 +70,6 @@ export default function SpotifyNowPlayingController() {
 				payload.trackUrl
 			);
 		};
-
-		if (!ENDPOINT) {
-			setError();
-			return;
-		}
 
 		let isRequestInFlight = false;
 		let destroyed = false;
