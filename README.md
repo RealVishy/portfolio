@@ -16,9 +16,11 @@ Inside of your Astro project, you'll see the following folders and files:
 │   └── favicon.svg
 ├── src
 │   ├── assets
-│   │   └── astro.svg
+│   │   └── profile-photo.png
 │   ├── components
-│   │   └── Welcome.astro
+│   │   ├── CurrentConditionsController.tsx
+│   │   ├── SpotifyNowPlayingController.tsx
+│   │   └── ThemeToggleController.tsx
 │   ├── layouts
 │   │   └── Layout.astro
 │   └── pages
