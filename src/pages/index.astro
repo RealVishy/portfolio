@@ -662,6 +662,10 @@ const tools = [
 	.spotify[data-spotify-state='playing'] .spotify-state {
 		color: #6fe0aa;
 		border-color: color-mix(in srgb, #6fe0aa, var(--border) 45%);
+		box-shadow:
+			0 0 0.2rem rgb(111 224 170 / 30%),
+			0 0 0.8rem rgb(111 224 170 / 26%);
+		animation: liveBadgePulse 2.4s ease-in-out infinite;
 	}
 
 	.spotify[data-spotify-state='idle'] .spotify-state {
@@ -671,6 +675,22 @@ const tools = [
 	.spotify[data-spotify-state='error'] .spotify-state {
 		color: #ff8a94;
 		border-color: color-mix(in srgb, #ff8a94, var(--border) 45%);
+	}
+
+	@keyframes liveBadgePulse {
+		0%,
+		100% {
+			filter: brightness(0.8);
+			box-shadow:
+				0 0 0.12rem rgb(111 224 170 / 22%),
+				0 0 0.45rem rgb(111 224 170 / 18%);
+		}
+		50% {
+			filter: brightness(1.2);
+			box-shadow:
+				0 0 0.3rem rgb(111 224 170 / 55%),
+				0 0 1rem rgb(111 224 170 / 42%);
+		}
 	}
 
 	.spotify-body {
