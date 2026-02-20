@@ -7,7 +7,6 @@ type SpotifyNowPlayingPayload = {
 	albumName?: string;
 	albumImageUrl?: string;
 	trackUrl?: string;
-	lastUpdated?: string;
 };
 
 type SpotifyViewState = {

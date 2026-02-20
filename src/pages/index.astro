@@ -193,6 +193,7 @@ const tools = [
 		const terminalCommandNode = document.querySelector('#terminal-command');
 		const statusMessageNode = document.querySelector('#status-message-text');
 		const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+		let introTimeoutId = 0;
 
 		if (pageNode && !prefersReducedMotion) {
 			const introTiles = pageNode.querySelectorAll('.tile');
@@ -204,7 +205,8 @@ const tools = [
 				maxIntroDelayMs = Math.max(maxIntroDelayMs, delay);
 				tile.style.setProperty('--intro-delay', `${delay}ms`);
 			});
-			window.setTimeout(() => {
+			window.clearTimeout(introTimeoutId);
+			introTimeoutId = window.setTimeout(() => {
 				pageNode.classList.remove('is-intro-active');
 			}, maxIntroDelayMs + introDurationMs + 90);
 		}
@@ -1037,13 +1039,12 @@ const tools = [
 			}
 		}
 
-		@media (prefers-reduced-motion: reduce) {
-			.page.is-intro-active .tile {
-				animation: none;
-				opacity: 1;
-				transform: none;
-				filter: none;
-			}
+			@media (prefers-reduced-motion: reduce) {
+				.page.is-intro-active .tile {
+					animation: none;
+					opacity: 1;
+					transform: none;
+				}
 
 			.tile,
 			#spotify-art,
