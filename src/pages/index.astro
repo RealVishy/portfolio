@@ -12,6 +12,7 @@ import {
 	siGithub,
 	siKubernetes,
 	siPython,
+	siSpotify,
 	siTrakt,
 } from 'simple-icons';
 
@@ -135,7 +136,7 @@ const tools = [
 						<span class="dot" aria-hidden="true"></span>
 				</div>
 				<p id="status-message-text" class="status-message">
-					Leading UTS Programming Society operations and delivering technical workshops.
+					Recently wrapped up a software engineering internship at Ericsson and now focusing on open source contributions.
 				</p>
 			</article>
 
@@ -175,6 +176,11 @@ const tools = [
 						<p class="spotify-artists" id="spotify-artists">Fetching your listening status.</p>
 					</div>
 				</div>
+				<span class="spotify-corner-link" aria-hidden="true">
+					<svg viewBox="0 0 24 24" aria-hidden="true">
+						<path d={siSpotify.path} fill="currentColor"></path>
+					</svg>
+				</span>
 			</article>
 
 			<article class="tile terminal">
@@ -231,70 +237,6 @@ const tools = [
 			introTimeoutId = window.setTimeout(() => {
 				pageNode.classList.remove('is-intro-active');
 			}, maxIntroDelayMs + introDurationMs + 90);
-		}
-
-		if (
-			pageNode &&
-			!prefersReducedMotion &&
-			window.matchMedia('(min-width: 1100px) and (hover: hover) and (pointer: fine)').matches
-		) {
-			const depthTiles = pageNode.querySelectorAll('.tile');
-			const maxTilt = 3.5;
-
-			const clamp = (value, min, max) => Math.min(max, Math.max(min, value));
-
-				depthTiles.forEach((tile) => {
-					let hoverRect = null;
-					let pointerX = 0;
-					let pointerY = 0;
-					let rafId = 0;
-
-					const applyDepth = () => {
-						if (!hoverRect) return;
-
-						const x = clamp(pointerX - hoverRect.left, 0, hoverRect.width);
-						const y = clamp(pointerY - hoverRect.top, 0, hoverRect.height);
-						const xRatio = x / hoverRect.width - 0.5;
-						const yRatio = y / hoverRect.height - 0.5;
-						const rotateX = clamp(-yRatio * 6, -maxTilt, maxTilt);
-						const rotateY = clamp(xRatio * 6, -maxTilt, maxTilt);
-
-						tile.style.setProperty('--rx', `${rotateX.toFixed(2)}deg`);
-						tile.style.setProperty('--ry', `${rotateY.toFixed(2)}deg`);
-					};
-
-					const paintDepth = () => {
-						rafId = 0;
-						applyDepth();
-					};
-
-					const resetDepth = () => {
-						window.cancelAnimationFrame(rafId);
-						rafId = 0;
-					hoverRect = null;
-						tile.classList.remove('is-depth-active');
-						tile.style.setProperty('--rx', '0deg');
-						tile.style.setProperty('--ry', '0deg');
-					};
-
-					tile.addEventListener('mouseenter', (event) => {
-						hoverRect = tile.getBoundingClientRect();
-						pointerX = event.clientX;
-						pointerY = event.clientY;
-						applyDepth();
-						tile.classList.add('is-depth-active');
-					});
-
-				tile.addEventListener('mousemove', (event) => {
-					pointerX = event.clientX;
-					pointerY = event.clientY;
-					if (!rafId) {
-						rafId = window.requestAnimationFrame(paintDepth);
-					}
-				});
-
-				tile.addEventListener('mouseleave', resetDepth);
-			});
 		}
 
 		const terminalCommands = [
@@ -368,13 +310,7 @@ const tools = [
 			position: relative;
 			overflow: hidden;
 			isolation: isolate;
-			transform-style: preserve-3d;
-			will-change: transform;
-			--rx: 0deg;
-			--ry: 0deg;
-			transition:
-				border-color 0.2s ease,
-				transform 0.2s ease;
+			transition: border-color 0.2s ease;
 		}
 
 		.tile::before {
@@ -391,10 +327,6 @@ const tools = [
 
 		.tile:hover {
 			border-color: color-mix(in srgb, var(--accent), var(--border) 38%);
-		}
-
-		.tile.is-depth-active {
-			transform: perspective(900px) rotateX(var(--rx)) rotateY(var(--ry)) translateY(-1px);
 		}
 
 		.page.is-intro-active .tile {
@@ -827,6 +759,10 @@ const tools = [
 			gap: 0.68rem;
 		}
 
+		.spotify {
+			position: relative;
+		}
+
 		.status-top {
 			display: flex;
 			justify-content: space-between;
@@ -977,6 +913,30 @@ const tools = [
 			transform: translateY(4px);
 		}
 
+		.spotify-corner-link {
+			position: absolute;
+			right: 1.02rem;
+			bottom: 0.92rem;
+			width: auto;
+			height: auto;
+			display: inline-flex;
+			align-items: center;
+			justify-content: center;
+			line-height: 0;
+			color: #fff;
+			opacity: 0.88;
+			z-index: 2;
+			pointer-events: none;
+			transition: none;
+		}
+
+		.spotify-corner-link svg {
+			width: 1rem !important;
+			height: 1rem !important;
+			display: block;
+			flex-shrink: 0;
+		}
+
 		.spotify-title {
 			display: block;
 			margin: 0;
@@ -1035,9 +995,8 @@ const tools = [
 				display: none;
 			}
 
-			.terminal:hover,
 			.terminal:focus-within {
-				border-color: var(--border);
+				border-color: color-mix(in srgb, var(--accent), var(--border) 38%);
 			}
 
 			.terminal-chrome {
