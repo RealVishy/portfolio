@@ -354,6 +354,7 @@ const tools = [
 			margin: 0;
 			font-size: clamp(1.3rem, 3.2vw, 1.95rem);
 			font-weight: 500;
+			font-family: var(--font-sans);
 			line-height: 1.36;
 			max-width: 28ch;
 			letter-spacing: -0.01em;
@@ -368,13 +369,14 @@ const tools = [
 			font-size: clamp(1.1rem, 1.3vw, 1.45rem);
 			line-height: 1.25;
 			font-weight: 600;
+			font-family: var(--font-sans);
 			letter-spacing: -0.01em;
 			color: var(--text);
 		}
 
 		.cards h2 {
-			font-family: 'IBM Plex Mono', 'Fira Code', 'SFMono-Regular', Menlo, monospace;
-			font-size: clamp(1rem, 1.05vw, 1.14rem);
+			font-family: var(--font-mono);
+			font-size: clamp(1.02rem, 1.1vw, 1.18rem);
 			font-weight: 500;
 			letter-spacing: 0.09em;
 			text-transform: uppercase;
@@ -382,10 +384,10 @@ const tools = [
 
 		p,
 		li {
-			font-family: 'Space Grotesk', 'Segoe UI', sans-serif;
+			font-family: var(--font-sans);
 			color: var(--text-soft);
 			line-height: 1.5;
-			font-size: 0.95rem;
+			font-size: var(--text-base);
 			max-width: 52ch;
 		}
 
@@ -419,7 +421,7 @@ const tools = [
 			padding: 0.52rem 0.84rem;
 			border-radius: var(--radius-sm);
 			font-size: 0.8rem;
-			font-family: 'IBM Plex Mono', 'Fira Code', 'SFMono-Regular', Menlo, monospace;
+			font-family: var(--font-mono);
 			letter-spacing: 0.03em;
 			text-transform: uppercase;
 			transition:
@@ -562,8 +564,8 @@ const tools = [
 			border-radius: var(--radius-xs);
 			border: 1px solid color-mix(in srgb, var(--accent), var(--border) 72%);
 			background: color-mix(in srgb, var(--tile-strong), white 3%);
-				font-size: 0.74rem;
-				font-family: 'IBM Plex Mono', 'Fira Code', 'SFMono-Regular', Menlo, monospace;
+				font-size: var(--label-sm);
+				font-family: var(--font-mono);
 				letter-spacing: 0.02em;
 				color: var(--text-soft);
 			}
@@ -586,10 +588,10 @@ const tools = [
 
 		.chip-label {
 			margin: 0 0 0.1rem;
-			font-family: 'IBM Plex Mono', 'Fira Code', 'SFMono-Regular', Menlo, monospace;
+			font-family: var(--font-mono);
 			text-transform: uppercase;
 			letter-spacing: 0.09em;
-			font-size: 0.7rem;
+			font-size: var(--label-xs);
 			color: var(--muted);
 		}
 
@@ -609,7 +611,7 @@ const tools = [
 			border: 1px solid color-mix(in srgb, var(--accent), var(--border) 68%);
 				background: var(--tile-strong);
 				font-size: 0.92rem;
-				font-family: 'IBM Plex Mono', 'Fira Code', 'SFMono-Regular', Menlo, monospace;
+				font-family: var(--font-mono);
 				letter-spacing: 0.02em;
 				line-height: 1.2;
 				color: var(--text-soft);
@@ -718,7 +720,7 @@ const tools = [
 
 		#weather-temp {
 			font-size: 1.24rem;
-			font-family: 'IBM Plex Mono', 'Fira Code', 'SFMono-Regular', Menlo, monospace;
+			font-family: var(--font-mono);
 			letter-spacing: 0.01em;
 			font-weight: 500;
 			line-height: 1;
@@ -738,8 +740,8 @@ const tools = [
 			border-radius: var(--radius-xs);
 			border: 1px solid color-mix(in srgb, var(--border), white 8%);
 			background: color-mix(in srgb, var(--tile-strong), white 2%);
-			font-family: 'IBM Plex Mono', 'Fira Code', 'SFMono-Regular', Menlo, monospace;
-			font-size: 0.74rem;
+			font-family: var(--font-mono);
+			font-size: var(--label-sm);
 			letter-spacing: 0.02em;
 			line-height: 1.2;
 			color: var(--text-soft);
@@ -747,8 +749,8 @@ const tools = [
 
 		.weather-updated {
 			margin: 0.15rem 0 0;
-			font-family: 'IBM Plex Mono', 'Fira Code', 'SFMono-Regular', Menlo, monospace;
-			font-size: 0.74rem;
+			font-family: var(--font-mono);
+			font-size: var(--label-sm);
 			letter-spacing: 0.02em;
 		}
 
@@ -800,8 +802,6 @@ const tools = [
 			margin: 0;
 			transition: opacity 0.18s ease;
 			min-height: calc(1.5em * 2);
-			max-height: calc(1.5em * 2);
-			overflow: hidden;
 		}
 
 		.status-message.is-changing {
@@ -820,7 +820,8 @@ const tools = [
 		}
 
 		.spotify-state {
-			font-size: 0.72rem;
+			font-family: var(--font-mono);
+			font-size: var(--label-sm);
 			letter-spacing: 0.05em;
 			text-transform: uppercase;
 			color: var(--muted);
@@ -955,7 +956,7 @@ const tools = [
 
 		.spotify-artists {
 			margin: 0;
-			font-size: 0.88rem;
+			font-size: var(--text-sm);
 			color: var(--muted);
 			line-height: 1.35;
 			overflow: hidden;
@@ -1037,10 +1038,10 @@ const tools = [
 			.terminal-caption {
 				margin: 0;
 				text-align: center;
-				font-size: 0.7rem;
+				font-size: var(--label-xs);
 				letter-spacing: 0.04em;
-				color: #d8dde7;
-				font-family: 'IBM Plex Mono', 'Fira Code', 'SFMono-Regular', Menlo, monospace;
+				color: var(--text-soft);
+				font-family: var(--font-mono);
 				opacity: 0.9;
 			}
 
@@ -1061,10 +1062,10 @@ const tools = [
 
 			.terminal-line {
 				margin: 0;
-				font-size: 0.88rem;
+				font-size: var(--text-sm);
 				line-height: 1.5;
-				color: #d7deea;
-				font-family: 'IBM Plex Mono', 'Fira Code', 'SFMono-Regular', Menlo, monospace;
+				color: var(--text-soft);
+				font-family: var(--font-mono);
 				display: flex;
 				align-items: baseline;
 				flex-wrap: wrap;
@@ -1076,8 +1077,8 @@ const tools = [
 			}
 
 			.terminal-line-muted {
-				color: #8c96a6;
-				font-size: 0.78rem;
+				color: var(--muted);
+				font-size: var(--text-xs);
 				letter-spacing: 0.01em;
 			}
 
@@ -1095,7 +1096,7 @@ const tools = [
 
 			#terminal-command {
 				display: inline-block;
-				color: #edf2fa;
+				color: var(--text);
 				white-space: normal;
 				overflow-wrap: anywhere;
 			}
@@ -1103,7 +1104,7 @@ const tools = [
 			.terminal-cursor {
 				width: 0.6ch;
 				height: 1.15em;
-				background: color-mix(in srgb, #edf2fa, var(--accent-soft) 10%);
+				background: color-mix(in srgb, var(--text), var(--accent-soft) 10%);
 				display: inline-block;
 				transform: translateY(0.13em);
 				animation: terminalCursorBlink 1s step-end infinite;
