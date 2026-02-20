@@ -17,19 +17,6 @@ const { title = 'Portfolio' } = Astro.props;
 		/>
 			<meta name="generator" content={Astro.generator} />
 			<title>{title}</title>
-			<script is:inline>
-				(() => {
-					const storageKey = 'theme-preference';
-					const root = document.documentElement;
-					const media = window.matchMedia('(prefers-color-scheme: dark)');
-					const stored = localStorage.getItem(storageKey);
-					const preference =
-						stored === 'dark' || stored === 'light' || stored === 'system' ? stored : 'system';
-					const resolvedTheme = preference === 'system' ? (media.matches ? 'dark' : 'light') : preference;
-					root.dataset.themePreference = preference;
-					root.dataset.theme = resolvedTheme;
-				})();
-			</script>
 		</head>
 	<body>
 		<slot />
@@ -51,22 +38,6 @@ const { title = 'Portfolio' } = Astro.props;
 			--ring: #3d4658;
 			--avatar-bg: #0f141d;
 			color-scheme: dark;
-		}
-
-		:root[data-theme='light'] {
-			--bg: #eef3fa;
-			--bg-elevated: #f7f9fc;
-			--tile: #f7fafc;
-			--tile-strong: #edf2f8;
-			--tile-alt: #e8eef6;
-			--text: #121723;
-			--text-soft: #334056;
-			--muted: #5f6b80;
-			--border: #c7d0df;
-			--accent: #cf4658;
-			--ring: #aeb8c8;
-			--avatar-bg: #e5ebf4;
-			color-scheme: light;
 		}
 
 	*,

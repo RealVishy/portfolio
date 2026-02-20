@@ -3,7 +3,6 @@ import { Image } from 'astro:assets';
 import Layout from '../layouts/Layout.astro';
 import CurrentConditionsController from '../components/CurrentConditionsController';
 import SpotifyNowPlayingController from '../components/SpotifyNowPlayingController';
-import ThemeToggleController from '../components/ThemeToggleController';
 import profilePhoto from '../assets/profile-photo.png';
 import {
 	siAstro,
@@ -31,13 +30,6 @@ const tools = [
 	<main class="page">
 			<section class="tile hero">
 				<div>
-					<div class="hero-top">
-						<div class="theme-toggle" role="group" aria-label="Theme">
-							<button type="button" data-theme-choice="dark">Dark</button>
-							<button type="button" data-theme-choice="system">System</button>
-							<button type="button" data-theme-choice="light">Light</button>
-						</div>
-					</div>
 					<h1>
 						Hi, I&apos;m <strong>Vishwas Parpattegar</strong>, a software engineering student with a
 						strong focus on dev experience, containerisation, and CI/CD.
@@ -186,7 +178,6 @@ const tools = [
 				</p>
 			</article>
 		</section>
-		<ThemeToggleController client:load />
 		<CurrentConditionsController client:load />
 		<SpotifyNowPlayingController client:load />
 	</main>
@@ -277,13 +268,6 @@ const tools = [
 			z-index: 1;
 		}
 
-		:root[data-theme='light'] .backdrop {
-			background:
-				radial-gradient(circle at 15% 5%, rgb(207 70 88 / 14%), transparent 30%),
-				radial-gradient(circle at 92% 20%, rgb(70 120 190 / 14%), transparent 28%),
-				linear-gradient(180deg, #f7f9fc 0%, #edf2f8 100%);
-		}
-
 		.tile {
 			background: linear-gradient(180deg, color-mix(in srgb, var(--tile), white 3%), var(--tile-alt));
 			border: 1px solid var(--border);
@@ -315,63 +299,6 @@ const tools = [
 
 		h1 strong {
 			font-weight: 700;
-		}
-
-		.hero-top {
-			display: flex;
-			justify-content: flex-end;
-			margin-bottom: 0.75rem;
-		}
-
-		.theme-toggle {
-			display: inline-grid;
-			grid-template-columns: repeat(3, minmax(0, 1fr));
-			gap: 0.35rem;
-			padding: 0.25rem;
-			border: 1px solid color-mix(in srgb, var(--accent), var(--border) 65%);
-			background: var(--tile-strong);
-			position: relative;
-			isolation: isolate;
-			--active-index: 1;
-		}
-
-		.theme-toggle::before {
-			content: '';
-			position: absolute;
-			top: 0.25rem;
-			bottom: 0.25rem;
-			left: calc(
-				0.25rem + (var(--active-index) * (((100% - 0.5rem - 0.7rem) / 3) + 0.35rem))
-			);
-			width: calc((100% - 0.5rem - 0.7rem) / 3);
-			background: var(--accent);
-			border: 1px solid color-mix(in srgb, var(--accent), black 25%);
-			transition: left 0.22s ease;
-			z-index: 0;
-		}
-
-		.theme-toggle button {
-			appearance: none;
-			border: 1px solid transparent;
-			background: transparent;
-			color: var(--text-soft);
-			font: inherit;
-			font-size: 0.78rem;
-			line-height: 1;
-			padding: 0.38rem 0.64rem;
-			cursor: pointer;
-			position: relative;
-			z-index: 1;
-			transition: color 0.2s ease;
-		}
-
-		.theme-toggle button:hover {
-			border-color: color-mix(in srgb, var(--accent), var(--border) 55%);
-		}
-
-		.theme-toggle button[aria-pressed='true'] {
-			color: #fff;
-			border-color: transparent;
 		}
 
 	.socials {
@@ -907,27 +834,16 @@ const tools = [
 		}
 	}
 
-		@media (max-width: 640px) {
+	@media (max-width: 640px) {
 			.page {
 				width: min(1120px, 100% - 1rem);
 				margin-top: 0.8rem;
-			}
-
-			.hero-top {
-				justify-content: flex-start;
 			}
 
 		.socials {
 			display: grid;
 			grid-template-columns: repeat(2, minmax(0, 1fr));
 			gap: 0.6rem;
-		}
-
-		@media (prefers-reduced-motion: reduce) {
-			.theme-toggle::before,
-			.theme-toggle button {
-				transition: none;
-			}
 		}
 
 		.socials a {
