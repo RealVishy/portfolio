@@ -149,20 +149,25 @@ const getRecentlyPlayed = async (accessToken: string) => {
   return toPayload(track, false);
 };
 
-export const onRequestOptions = async (context: FunctionContext) => {
-  const origin = resolveOrigin(context.request, context.env.ALLOWED_ORIGIN);
-  return new Response(null, { status: 204, headers: corsHeaders(origin) });
-};
-
-export const onRequestGet = async (context: FunctionContext) => {
+export const onRequest = async (context: FunctionContext) => {
   const { request, env } = context;
-  const origin = resolveOrigin(request, env.ALLOWED_ORIGIN);
-
-  if (!env.SPOTIFY_CLIENT_ID || !env.SPOTIFY_CLIENT_SECRET || !env.SPOTIFY_REFRESH_TOKEN) {
-    return json({ error: 'spotify_not_configured' }, 500, origin);
-  }
+  let origin = '*';
 
   try {
+    origin = resolveOrigin(request, env.ALLOWED_ORIGIN);
+
+    if (request.method === 'OPTIONS') {
+      return new Response(null, { status: 204, headers: corsHeaders(origin) });
+    }
+
+    if (request.method !== 'GET') {
+      return json({ error: 'method_not_allowed' }, 405, origin);
+    }
+
+    if (!env.SPOTIFY_CLIENT_ID || !env.SPOTIFY_CLIENT_SECRET || !env.SPOTIFY_REFRESH_TOKEN) {
+      return json({ error: 'spotify_not_configured' }, 500, origin);
+    }
+
     const accessToken = await getAccessToken(env);
     const currentlyPlaying = await getCurrentlyPlaying(accessToken);
     if (currentlyPlaying?.isPlaying) {
@@ -189,7 +194,8 @@ export const onRequestGet = async (context: FunctionContext) => {
       200,
       origin
     );
-  } catch {
+  } catch (error) {
+    console.error('spotify-now-playing function failed', error);
     return json({ error: 'spotify_unavailable' }, 502, origin);
   }
 };
