@@ -1,7 +1,19 @@
 import { useEffect } from 'preact/hooks';
 
 const WEATHER_URL =
-	'https://api.open-meteo.com/v1/forecast?latitude=-33.8688&longitude=151.2093&current=temperature_2m,weather_code&timezone=Australia%2FSydney';
+	'https://api.open-meteo.com/v1/forecast?latitude=-33.8688&longitude=151.2093&current=temperature_2m,weather_code,apparent_temperature,relative_humidity_2m,wind_speed_10m&timezone=Australia%2FSydney';
+
+type OpenMeteoCurrent = {
+	temperature_2m?: number;
+	weather_code?: number;
+	apparent_temperature?: number;
+	relative_humidity_2m?: number;
+	wind_speed_10m?: number;
+};
+
+type OpenMeteoResponse = {
+	current?: OpenMeteoCurrent;
+};
 
 const weatherIconFromCode = (code: number) => {
 	const svg = (paths: string) =>
@@ -48,6 +60,12 @@ export default function CurrentConditionsController() {
 		const timeNode = document.querySelector<HTMLElement>('#sydney-time');
 		const weatherTempNode = document.querySelector<HTMLElement>('#weather-temp');
 		const weatherIconNode = document.querySelector<HTMLElement>('#weather-icon');
+		const weatherFeelsNode = document.querySelector<HTMLElement>('#weather-feels');
+		const weatherHumidityNode = document.querySelector<HTMLElement>('#weather-humidity');
+		const weatherWindNode = document.querySelector<HTMLElement>('#weather-wind');
+		const weatherUpdatedNode = document.querySelector<HTMLElement>('#weather-updated');
+		let lastWeatherUpdateAt: number | null = null;
+		let hasWeatherResult = false;
 
 		const renderTime = () => {
 			if (!timeNode) return;
@@ -63,33 +81,93 @@ export default function CurrentConditionsController() {
 			timeNode.textContent = value;
 		};
 
+		const renderWeatherFreshness = () => {
+			if (!weatherUpdatedNode) return;
+			if (!hasWeatherResult) {
+				weatherUpdatedNode.textContent = 'Updating...';
+				return;
+			}
+			if (lastWeatherUpdateAt === null) {
+				weatherUpdatedNode.textContent = 'Update unavailable';
+				return;
+			}
+			const elapsedMinutes = Math.floor((Date.now() - lastWeatherUpdateAt) / 60_000);
+			if (elapsedMinutes < 1) {
+				weatherUpdatedNode.textContent = 'Updated just now';
+				return;
+			}
+			if (elapsedMinutes < 60) {
+				weatherUpdatedNode.textContent = `Updated ${elapsedMinutes}m ago`;
+				return;
+			}
+			weatherUpdatedNode.textContent = 'Updated 1h+ ago';
+		};
+
 		const loadWeather = async () => {
-			if (!weatherTempNode || !weatherIconNode) return;
+			if (
+				!weatherTempNode ||
+				!weatherIconNode ||
+				!weatherFeelsNode ||
+				!weatherHumidityNode ||
+				!weatherWindNode ||
+				!weatherUpdatedNode
+			) {
+				return;
+			}
 			try {
 				const response = await fetch(WEATHER_URL);
 				if (!response.ok) throw new Error('weather request failed');
-				const data = await response.json();
-				const current = data?.current;
+				const data = (await response.json()) as OpenMeteoResponse;
+				const current = data.current;
 				if (!current) throw new Error('missing weather payload');
-				weatherTempNode.textContent = `${Math.round(current.temperature_2m)} C`;
-				weatherIconNode.innerHTML = weatherIconFromCode(Number(current.weather_code));
+				const temperature = Number(current.temperature_2m);
+				const weatherCode = Number(current.weather_code);
+				const feelsLike = Number(current.apparent_temperature);
+				const humidity = Number(current.relative_humidity_2m);
+				const wind = Number(current.wind_speed_10m);
+				if (
+					!Number.isFinite(temperature) ||
+					!Number.isFinite(weatherCode) ||
+					!Number.isFinite(feelsLike) ||
+					!Number.isFinite(humidity) ||
+					!Number.isFinite(wind)
+				) {
+					throw new Error('invalid weather payload');
+				}
+				weatherTempNode.textContent = `${Math.round(temperature)} C`;
+				weatherIconNode.innerHTML = weatherIconFromCode(weatherCode);
+				weatherFeelsNode.textContent = `Feels ${Math.round(feelsLike)} C`;
+				weatherHumidityNode.textContent = `Humidity ${Math.round(humidity)}%`;
+				weatherWindNode.textContent = `Wind ${Math.round(wind)} km/h`;
+				lastWeatherUpdateAt = Date.now();
+				hasWeatherResult = true;
+				renderWeatherFreshness();
 			} catch {
 				weatherTempNode.textContent = '-- C';
 				weatherIconNode.textContent = '--';
+				weatherFeelsNode.textContent = 'Feels -- C';
+				weatherHumidityNode.textContent = 'Humidity --%';
+				weatherWindNode.textContent = 'Wind -- km/h';
+				lastWeatherUpdateAt = null;
+				hasWeatherResult = true;
+				renderWeatherFreshness();
 			}
 		};
 
 		renderTime();
+		renderWeatherFreshness();
 		void loadWeather();
 
 		const timeInterval = window.setInterval(renderTime, 1000);
 		const weatherInterval = window.setInterval(() => {
 			void loadWeather();
 		}, 10 * 60 * 1000);
+		const freshnessInterval = window.setInterval(renderWeatherFreshness, 60 * 1000);
 
 		return () => {
 			window.clearInterval(timeInterval);
 			window.clearInterval(weatherInterval);
+			window.clearInterval(freshnessInterval);
 		};
 	}, []);
 

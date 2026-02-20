@@ -12,7 +12,7 @@ const { title = 'Portfolio' } = Astro.props;
 		<link rel="preconnect" href="https://fonts.googleapis.com" />
 		<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
 		<link
-			href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;600&family=Space+Grotesk:wght@400;500;700&display=swap"
+			href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600;700&family=Space+Grotesk:wght@400;500;700&display=swap"
 			rel="stylesheet"
 		/>
 			<meta name="generator" content={Astro.generator} />
@@ -25,18 +25,24 @@ const { title = 'Portfolio' } = Astro.props;
 
 	<style is:global>
 		:root {
-			--bg: #090d12;
-			--bg-elevated: #0a0f16;
-			--tile: #10151c;
-			--tile-strong: #0c1118;
-			--tile-alt: #0d1219;
-			--text: #eef0f2;
-			--text-soft: #ccd1d8;
-			--muted: #9da3ad;
-			--border: #303744;
-			--accent: #e24a53;
-			--ring: #3d4658;
-			--avatar-bg: #0f141d;
+			--bg: #070b10;
+			--bg-elevated: #0a1017;
+			--tile: #0d131b;
+			--tile-strong: #090e15;
+			--tile-alt: #0b1219;
+			--text: #edf1f5;
+			--text-soft: #c6ced8;
+			--muted: #8e98a6;
+			--border: #3a4556;
+			--accent: #ff5f56;
+			--accent-soft: #ff9b95;
+			--success: #27c93f;
+			--ring: #465267;
+			--avatar-bg: #0c121b;
+			--radius-lg: 16px;
+			--radius-md: 12px;
+			--radius-sm: 10px;
+			--radius-xs: 8px;
 			color-scheme: dark;
 		}
 
@@ -53,7 +59,7 @@ const { title = 'Portfolio' } = Astro.props;
 	}
 
 	body {
-		font-family: 'Space Grotesk', 'Segoe UI', sans-serif;
+		font-family: 'IBM Plex Mono', 'Fira Code', 'SFMono-Regular', Menlo, monospace;
 		background: var(--bg, #090d12);
 		color: var(--text, #f4f4f5);
 		transition:
