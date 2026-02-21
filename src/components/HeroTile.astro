@@ -1,0 +1,61 @@
+---
+import { Image } from 'astro:assets';
+import type { ImageMetadata } from 'astro';
+
+interface Props {
+  profilePhoto: ImageMetadata;
+  githubPath: string;
+  traktPath: string;
+}
+
+const { profilePhoto, githubPath, traktPath } = Astro.props;
+---
+
+<section class="tile hero">
+  <div class="hero-copy">
+    <h1>
+      Hi, I&apos;m Vishwas Parpattegar,<br />
+      Software Engineering Student @ UTS.
+    </h1>
+    <div class="socials">
+      <a class="primary" href="https://realvishy.github.io/resume/resume.pdf" target="_blank" rel="noreferrer">
+        <svg viewBox="0 0 24 24" aria-hidden="true">
+          <path
+            d="M6 2a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8.8L14.2 2H6Zm7 1.7 4.3 4.3H13V3.7Zm-4 7.3h6a1 1 0 1 1 0 2H9a1 1 0 1 1 0-2Zm0 4h6a1 1 0 1 1 0 2H9a1 1 0 1 1 0-2Z"
+          ></path>
+        </svg>
+        <span>Resume</span>
+      </a>
+      <a class="secondary" href="https://github.com/RealVishy" target="_blank" rel="noreferrer">
+        <svg viewBox="0 0 24 24" aria-hidden="true">
+          <path d={githubPath} fill="currentColor"></path>
+        </svg>
+        <span>GitHub</span>
+      </a>
+      <a class="secondary" href="https://www.linkedin.com/in/vishwasparpattegar" target="_blank" rel="noreferrer">
+        <svg viewBox="0 0 24 24" aria-hidden="true">
+          <path
+            d="M20.447 20.452H16.89V14.87c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.137 1.445-2.137 2.939v5.68H9.35V9h3.415v1.561h.046c.478-.9 1.638-1.85 3.37-1.85 3.602 0 4.267 2.37 4.267 5.455v6.286ZM5.337 7.433a2.065 2.065 0 1 1 0-4.13 2.065 2.065 0 0 1 0 4.13Zm1.783 13.019H3.555V9H7.12v11.452ZM22.225 0H1.771A1.746 1.746 0 0 0 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451A1.752 1.752 0 0 0 24 22.271V1.729A1.751 1.751 0 0 0 22.222 0h.003Z"
+          ></path>
+        </svg>
+        <span>LinkedIn</span>
+      </a>
+      <a class="secondary" href="https://trakt.tv/users/realdishwash" target="_blank" rel="noreferrer">
+        <svg viewBox="0 0 24 24" aria-hidden="true">
+          <path d={traktPath} fill="currentColor"></path>
+        </svg>
+        <span>Trakt</span>
+      </a>
+    </div>
+  </div>
+  <div class="avatar">
+    <div class="avatar-ring"></div>
+    <Image
+      class="avatar-photo"
+      src={profilePhoto}
+      alt="Vishwas Parpattegar"
+      loading="eager"
+      fetchpriority="high"
+    />
+  </div>
+</section>

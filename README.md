@@ -62,6 +62,6 @@ Personal portfolio site built with Astro, using small Preact islands for live wi
 
 Optional:
 
-- `ALLOWED_ORIGIN` (comma-separated allowlist; defaults to permissive behavior)
+- `ALLOWED_ORIGIN` (comma-separated allowlist; defaults to same-origin only)
 
 No public frontend environment variables are required.

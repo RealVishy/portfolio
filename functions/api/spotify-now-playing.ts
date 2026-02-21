@@ -5,6 +5,11 @@ interface Env {
   ALLOWED_ORIGIN?: string;
 }
 
+type TokenCache = {
+  accessToken: string;
+  expiresAtMs: number;
+};
+
 type SpotifyTrack = {
   name?: string;
   artists?: Array<{ name?: string }>;
@@ -35,6 +40,9 @@ type FunctionContext = {
 const SPOTIFY_ACCOUNTS_URL = 'https://accounts.spotify.com/api/token';
 const SPOTIFY_CURRENTLY_PLAYING_URL = 'https://api.spotify.com/v1/me/player/currently-playing';
 const SPOTIFY_RECENTLY_PLAYED_URL = 'https://api.spotify.com/v1/me/player/recently-played?limit=1';
+const TOKEN_EXPIRY_BUFFER_MS = 30_000;
+
+let tokenCache: TokenCache | null = null;
 
 const parseAllowedOrigins = (value?: string) =>
   (value || '')
@@ -42,15 +50,27 @@ const parseAllowedOrigins = (value?: string) =>
     .map((origin) => origin.trim())
     .filter(Boolean);
 
-const resolveOrigin = (request: Request, allowedOrigin?: string) => {
-  const requestOrigin = request.headers.get('Origin');
+const resolveAllowedOrigins = (request: Request, allowedOrigin?: string) => {
   const allowedOrigins = parseAllowedOrigins(allowedOrigin);
+  if (allowedOrigins.length > 0) return allowedOrigins;
+  return [new URL(request.url).origin];
+};
 
-  if (!allowedOrigins.length) return requestOrigin || '*';
+const resolveOrigin = (request: Request, allowedOrigins: string[]) => {
+  const requestOrigin = request.headers.get('Origin');
+
   if (allowedOrigins.includes('*')) return '*';
-  if (!requestOrigin) return allowedOrigins[0];
-  if (allowedOrigins.includes(requestOrigin)) return requestOrigin;
+  if (requestOrigin && allowedOrigins.includes(requestOrigin)) return requestOrigin;
   return allowedOrigins[0];
+};
+
+const isOriginAllowed = (request: Request, allowedOrigins: string[]) => {
+  if (allowedOrigins.includes('*')) return true;
+  const requestOrigin = request.headers.get('Origin');
+  if (!requestOrigin) {
+    return allowedOrigins.includes(new URL(request.url).origin);
+  }
+  return allowedOrigins.includes(requestOrigin);
 };
 
 const corsHeaders = (origin: string) => ({
@@ -92,6 +112,10 @@ const toPayload = (track: SpotifyTrack, isPlaying: boolean): SpotifyNowPlayingPa
 };
 
 const getAccessToken = async (env: Env) => {
+  if (tokenCache && Date.now() < tokenCache.expiresAtMs - TOKEN_EXPIRY_BUFFER_MS) {
+    return tokenCache.accessToken;
+  }
+
   const basicAuth = btoa(`${env.SPOTIFY_CLIENT_ID}:${env.SPOTIFY_CLIENT_SECRET}`);
   const body = new URLSearchParams({
     grant_type: 'refresh_token',
@@ -111,8 +135,19 @@ const getAccessToken = async (env: Env) => {
     throw new Error('spotify token exchange failed');
   }
 
-  const data = (await response.json()) as { access_token?: string };
+  const data = (await response.json()) as { access_token?: string; expires_in?: number };
   if (!data.access_token) throw new Error('missing spotify access token');
+
+  const expiresInSeconds = Number(data.expires_in);
+  const ttlMs = Number.isFinite(expiresInSeconds) && expiresInSeconds > 0
+    ? expiresInSeconds * 1000
+    : 3_600_000;
+
+  tokenCache = {
+    accessToken: data.access_token,
+    expiresAtMs: Date.now() + ttlMs,
+  };
+
   return data.access_token;
 };
 
@@ -154,7 +189,12 @@ export const onRequest = async (context: FunctionContext) => {
   let origin = '*';
 
   try {
-    origin = resolveOrigin(request, env.ALLOWED_ORIGIN);
+    const allowedOrigins = resolveAllowedOrigins(request, env.ALLOWED_ORIGIN);
+    origin = resolveOrigin(request, allowedOrigins);
+
+    if (!isOriginAllowed(request, allowedOrigins)) {
+      return json({ error: 'origin_not_allowed' }, 403, origin);
+    }
 
     if (request.method === 'OPTIONS') {
       return new Response(null, { status: 204, headers: corsHeaders(origin) });

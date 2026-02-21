@@ -1,0 +1,42 @@
+---
+type Tool = {
+  name: string;
+  url: string;
+  iconPath: string;
+};
+
+interface Props {
+  tools: Tool[];
+}
+
+const { tools } = Astro.props;
+---
+
+<article class="tile about">
+  <h2>Engineering Snapshot</h2>
+  <div class="about-highlights">
+    <span>Platform Reliability</span>
+    <span>CI/CD Automation</span>
+    <span>OIDC Authentication</span>
+  </div>
+  <p class="about-detail">
+    Internship experience at Ericsson, focused on developer experience, containerisation, and CI/CD,
+    with hands-on work improving local-to-production workflows and internal tooling.
+  </p>
+  <div class="about-stack">
+    <div class="about-divider" aria-hidden="true"></div>
+    <p class="chip-label">Core stack</p>
+    <div class="tool-grid">
+      {
+        tools.map((tool) => (
+          <a class="tool-chip" href={tool.url} target="_blank" rel="noreferrer">
+            <svg viewBox="0 0 24 24" aria-hidden="true">
+              <path d={tool.iconPath} fill="currentColor" />
+            </svg>
+            <span>{tool.name}</span>
+          </a>
+        ))
+      }
+    </div>
+  </div>
+</article>
