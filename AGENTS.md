@@ -37,7 +37,7 @@ If you add tests, place them near the feature (`Component.test.ts`) or under a t
 
 ## Commit & Pull Request Guidelines
 Current history is minimal (`Initial commit`), so use a simple convention:
-- Commit messages in imperative mood, concise subject line (e.g., `Add responsive hero tiles`).
+- Use Conventional Commits for commit messages (e.g., `feat: add responsive hero tiles`, `fix: tighten Spotify origin checks`).
 - Keep commits focused and logically grouped.
 
 For pull requests, include:
