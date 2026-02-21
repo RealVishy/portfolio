@@ -139,11 +139,32 @@ const tools = [
 		.backdrop {
 			position: fixed;
 			inset: 0;
+			pointer-events: none;
+			overflow: hidden;
+			isolation: isolate;
 			background:
-				radial-gradient(circle at 13% 6%, rgb(255 95 86 / 24%), transparent 33%),
-				radial-gradient(circle at 84% 20%, rgb(39 201 63 / 15%), transparent 28%),
-				linear-gradient(180deg, #0a1017 0%, #070b10 100%);
+				radial-gradient(74% 58% at 12% -8%, rgb(255 95 86 / 20%), transparent 70%),
+				radial-gradient(62% 48% at 88% 10%, rgb(39 201 63 / 12%), transparent 72%),
+				radial-gradient(78% 56% at 50% 104%, rgb(140 164 196 / 11%), transparent 72%),
+				linear-gradient(180deg, #0d141d 0%, #09111a 45%, #070b10 100%);
 			z-index: 1;
+		}
+
+		.backdrop::before {
+			content: '';
+			position: absolute;
+			inset: 0;
+			background:
+				repeating-linear-gradient(0deg, rgb(255 255 255 / 2%) 0 1px, transparent 1px 5px),
+				repeating-linear-gradient(90deg, rgb(255 255 255 / 1.5%) 0 1px, transparent 1px 6px);
+			opacity: 0.2;
+		}
+
+		.backdrop::after {
+			content: '';
+			position: absolute;
+			inset: 0;
+			background: radial-gradient(130% 94% at 50% 18%, transparent 44%, rgb(2 5 9 / 54%) 100%);
 		}
 
 		.tile {
@@ -855,7 +876,7 @@ const tools = [
 				align-items: center;
 				gap: 0.6rem;
 				padding: 0.44rem 0.62rem;
-				background: linear-gradient(180deg, #2a313d 0%, #1c222d 100%);
+				background: #1f2632;
 				border-bottom: 1px solid #3a4352;
 			}
 
@@ -903,10 +924,7 @@ const tools = [
 				margin-top: 0;
 				padding: 0.8rem 0.85rem 0.95rem;
 				flex: 1;
-				background:
-					radial-gradient(circle at 90% 100%, rgb(39 201 63 / 6%), transparent 43%),
-					radial-gradient(circle at 0 0, rgb(255 95 86 / 6%), transparent 36%),
-					#0c1118;
+				background: #0c1118;
 			}
 
 			.terminal-line {
@@ -943,11 +961,19 @@ const tools = [
 				color: var(--accent-soft);
 			}
 
+			.terminal-command-wrap {
+				display: inline-flex;
+				align-items: baseline;
+				gap: 0;
+				min-width: 0;
+			}
+
 			#terminal-command {
-				display: inline-block;
+				display: inline;
 				color: var(--text);
 				white-space: normal;
 				overflow-wrap: anywhere;
+				min-width: 0;
 			}
 
 			.terminal-cursor {
@@ -1020,6 +1046,18 @@ const tools = [
 		@media (max-width: 760px) {
 			.hero {
 				grid-template-columns: 1fr;
+			}
+
+			.backdrop {
+				background:
+					radial-gradient(92% 58% at 0% -12%, rgb(255 95 86 / 17%), transparent 70%),
+					radial-gradient(88% 52% at 100% 7%, rgb(39 201 63 / 10%), transparent 74%),
+					radial-gradient(108% 66% at 50% 110%, rgb(140 164 196 / 9%), transparent 74%),
+					linear-gradient(180deg, #0c121b 0%, #081018 48%, #070b10 100%);
+			}
+
+			.backdrop::before {
+				opacity: 0.14;
 			}
 
 			.avatar {
